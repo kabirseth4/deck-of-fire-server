@@ -3,8 +3,9 @@
   "main": "server/index.js",
   "scripts": {
     "start": "node --watch server/index.js",
-    "db:migrate": "knex migrate:latest",
-    "db:seed": "knex seed:run"
+    "db:migrate": "cd db && knex migrate:latest",
+    "db:rollback": "cd db && knex migrate:rollback",
+    "db:seed": "cd db && knex seed:run"
   },
   "license": "ISC",
   "dependencies": {
