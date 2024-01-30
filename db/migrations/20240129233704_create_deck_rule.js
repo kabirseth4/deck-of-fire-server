@@ -6,7 +6,7 @@ exports.up = function (knex) {
   return knex.schema.createTable("deck_rule", (table) => {
     table.increments("id").primary();
     table.integer("occurences").unsigned().defaultTo(4);
-    table.integer("penalty").defaultTo(1);
+    table.integer("penalty").unsigned().defaultTo(0);
     table
       .integer("deck_id")
       .unsigned()
