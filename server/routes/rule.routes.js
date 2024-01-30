@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router({ mergeParams: true });
 
-const { allRules } = require("../controllers/rule.controller");
+const { allRules, newRule } = require("../controllers/rule.controller");
 
-router.route("/").get(allRules);
+router.route("/").get(allRules).post(newRule);
 
 module.exports = router;

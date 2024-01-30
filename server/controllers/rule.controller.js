@@ -11,4 +11,16 @@ const allRules = async (req, res) => {
   }
 };
 
-module.exports = { allRules };
+const newRule = async (req, res) => {
+  const { userId } = req.params;
+  const newRule = { ...req.body, user_id: userId };
+
+  try {
+    const createdRule = await ruleModel.addNew(newRule);
+    res.json(createdRule);
+  } catch (error) {
+    res.status(500).json({ message: "Unable to create new rule.", error });
+  }
+};
+
+module.exports = { allRules, newRule };
