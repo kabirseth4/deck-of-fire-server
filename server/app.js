@@ -3,13 +3,13 @@ const app = express();
 require("dotenv").config();
 const cors = require("cors");
 
-const { authenticateUser } = require("./middleware/authentication-middleware");
-const deckRoutes = require("./routes/deck-routes");
+const { authenticateUser } = require("./middleware/auth.middleware");
+const decksRoutes = require("./routes/decks.routes");
 
 app.use(express.json());
 app.use(cors());
 
 app.use(authenticateUser);
-app.use("/decks", deckRoutes);
+app.use("/decks", decksRoutes);
 
 module.exports = app;
