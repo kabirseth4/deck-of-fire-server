@@ -1,10 +1,11 @@
-const knex = require("knex")(require("../../db/knexfile"));
+const userModel = require("../models/user.model");
+const deckModel = require("../models/deck.model");
 
 const user = async (req, res, next) => {
   const { userId } = req.params;
 
   try {
-    const user = await knex("user").where({ id: userId }).first();
+    const user = await userModel.getOne(userId);
 
     if (!user) {
       return res
@@ -25,7 +26,7 @@ const deck = async (req, res, next) => {
   const { userId, deckId } = req.params;
 
   try {
-    const deck = await knex("deck").where({ id: deckId }).first();
+    const deck = await deckModel.getOne(deckId);
 
     if (!deck) {
       return res
@@ -48,4 +49,17 @@ const deck = async (req, res, next) => {
   }
 };
 
-module.exports = { user, deck };
+const ruleBody = async (req, res, next) => {
+  const { name, description } = req.body;
+
+  if (!name || !description) {
+    return res.status(400).json({
+      message: "Request body must include a name and description.",
+    });
+  }
+
+  req.body = { name, description };
+  next();
+};
+
+module.exports = { user, deck, ruleBody };

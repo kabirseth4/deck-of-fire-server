@@ -16,6 +16,7 @@ const singleDeck = async (req, res) => {
 
   try {
     const deckInfo = await deckModel.getOne(deckId);
+    delete deckInfo.user_id;
 
     const ruleColumns = ["rule.id", "name", "description"];
 
