@@ -19,8 +19,7 @@ const singleDeck = async (req, res) => {
     delete deckInfo.user_id;
 
     const ruleColumns = ["rule.id", "name", "description"];
-
-    if (!deckInfo.is_standard) ruleColumns.push("occurences");
+    if (deckInfo.is_custom) ruleColumns.push("occurences");
     if (deckInfo.is_scored) ruleColumns.push("penalty");
 
     const rules = await deckModel.getRules(deckId, ruleColumns);
@@ -34,4 +33,16 @@ const singleDeck = async (req, res) => {
   }
 };
 
-module.exports = { allDecks, singleDeck };
+const newDeck = async (req, res) => {
+  const { userId } = req.params;
+  const newDeck = { ...req.body, user_id: userId };
+
+  try {
+    const createdDeck = await deckModel.addNew(newDeck);
+    res.json(createdDeck);
+  } catch (error) {
+    res.status(500).json({ message: "Unable to create new deck.", error });
+  }
+};
+
+module.exports = { allDecks, singleDeck, newDeck };

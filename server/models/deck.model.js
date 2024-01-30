@@ -3,13 +3,13 @@ const knex = require("knex")(require("../../db/knexfile"));
 const getAll = async (userId) => {
   const decks = await knex("deck")
     .where({ user_id: userId })
-    .select("id", "name", "is_scored", "is_standard");
+    .select("id", "name", "is_scored", "is_custom");
   return decks;
 };
 
 const getOne = async (deckId) => {
   const deck = await knex("deck")
-    .select("id", "name", "is_scored", "is_standard", "user_id")
+    .select("id", "name", "is_scored", "is_custom", "user_id")
     .where({ id: deckId })
     .first();
   return deck;
@@ -23,4 +23,11 @@ const getRules = async (deckId, columns) => {
   return rules;
 };
 
-module.exports = { getAll, getOne, getRules };
+const addNew = async (newDeck) => {
+  const newDeckIds = await knex("deck").insert(newDeck);
+  const createdDeck = await getOne(newDeckIds[0]);
+  delete createdDeck.user_id;
+  return createdDeck;
+};
+
+module.exports = { getAll, getOne, getRules, addNew };

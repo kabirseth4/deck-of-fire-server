@@ -49,6 +49,19 @@ const deck = async (req, res, next) => {
   }
 };
 
+const deckBody = async (req, res, next) => {
+  const { name, is_scored, is_custom } = req.body;
+
+  if (!name) {
+    return res.status(400).json({
+      message: "Request body must include a name.",
+    });
+  }
+
+  req.body = { name, is_scored, is_custom };
+  next();
+};
+
 const ruleBody = async (req, res, next) => {
   const { name, description } = req.body;
 
@@ -62,4 +75,4 @@ const ruleBody = async (req, res, next) => {
   next();
 };
 
-module.exports = { user, deck, ruleBody };
+module.exports = { user, deck, deckBody, ruleBody };

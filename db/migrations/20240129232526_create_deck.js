@@ -7,7 +7,7 @@ exports.up = function (knex) {
     table.increments("id").primary();
     table.string("name", 50).notNullable();
     table.boolean("is_scored").defaultTo(false);
-    table.boolean("is_standard").defaultTo(false);
+    table.boolean("is_custom").defaultTo(false);
     table
       .integer("user_id")
       .unsigned()
