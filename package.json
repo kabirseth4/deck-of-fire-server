@@ -1,8 +1,8 @@
 {
   "name": "deck-of-fire-server",
-  "main": "server/index.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node --watch server/index.js",
+    "start": "node --watch index.js",
     "db:migrate": "cd db && knex migrate:latest",
     "db:rollback": "cd db && knex migrate:rollback",
     "db:seed": "cd db && knex seed:run"
