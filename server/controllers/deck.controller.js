@@ -1,6 +1,6 @@
 const deckModel = require("../models/deck.model");
 
-const index = async (req, res) => {
+const allDecks = async (req, res) => {
   const { userId } = req.params;
 
   try {
@@ -33,4 +33,4 @@ const singleDeck = async (req, res) => {
   }
 };
 
-module.exports = { index, singleDeck };
+module.exports = { allDecks, singleDeck };
