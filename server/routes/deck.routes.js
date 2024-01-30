@@ -1,11 +1,12 @@
 const express = require("express");
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
+
+const validate = require("../middleware/validation.middleware");
 const { index, singleDeck } = require("../controllers/deck.controller");
-const { validateDeckId } = require("../middleware/validation.middleware");
 
 router.route("/").get(index).post();
 
-router.use("/:deckId", validateDeckId);
+router.use("/:deckId", validate.deck);
 router.route("/:deckId").get(singleDeck);
 
 module.exports = router;

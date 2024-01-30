@@ -1,7 +1,7 @@
 const deckModel = require("../models/deck.model");
 
 const index = async (req, res) => {
-  const { authorization: userId } = req.headers;
+  const { userId } = req.params;
 
   try {
     const decks = await deckModel.getAll(userId);
@@ -12,30 +12,24 @@ const index = async (req, res) => {
 };
 
 const singleDeck = async (req, res) => {
-  const userId = Number(req.headers.authorization);
   const { deckId } = req.params;
 
   try {
-    const deck = await deckModel.getOne(deckId);
-
-    if (deck.user_id !== userId) {
-      return res.status(401).json({ message: "Invalid login credentials" });
-    }
-    delete deck.user_id;
+    const deckInfo = await deckModel.getOne(deckId);
 
     const ruleColumns = ["rule.id", "name", "description"];
 
-    if (!deck.is_standard) ruleColumns.push("occurences");
-    if (deck.is_scored) ruleColumns.push("penalty");
+    if (!deckInfo.is_standard) ruleColumns.push("occurences");
+    if (deckInfo.is_scored) ruleColumns.push("penalty");
 
     const rules = await deckModel.getRules(deckId, ruleColumns);
 
-    const deckWithRules = { ...deck, rules };
-    res.json(deckWithRules);
+    const deck = { ...deckInfo, rules };
+    res.json(deck);
   } catch (error) {
     res
       .status(500)
-      .json({ message: "Unable to retrieve deck with ID " + deckId, error });
+      .json({ message: `Unable to retrieve deck with ID ${deckId}.`, error });
   }
 };
 

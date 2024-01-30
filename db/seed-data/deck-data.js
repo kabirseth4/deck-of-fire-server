@@ -27,4 +27,11 @@ module.exports = [
     is_scored: true,
     is_standard: true,
   },
+  {
+    id: 5,
+    name: "New deck",
+    user_id: 2,
+    is_scored: false,
+    is_standard: false,
+  },
 ];

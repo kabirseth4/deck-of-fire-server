@@ -9,7 +9,7 @@ const getAll = async (userId) => {
 
 const getOne = async (deckId) => {
   const deck = await knex("deck")
-    .select("id", "name", "is_scored", "is_standard", "user_id")
+    .select("id", "name", "is_scored", "is_standard")
     .where({ id: deckId })
     .first();
   return deck;

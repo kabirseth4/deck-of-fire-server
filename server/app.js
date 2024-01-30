@@ -1,15 +1,14 @@
 const express = require("express");
 const app = express();
-require("dotenv").config();
 const cors = require("cors");
 
-const { authenticateUser } = require("./middleware/auth.middleware");
-const decksRoutes = require("./routes/deck.routes");
+const validate = require("./middleware/validation.middleware");
+const authenticate = require("./middleware/auth.middleware");
+const userRoutes = require("./routes/user.routes");
 
 app.use(express.json());
 app.use(cors());
 
-app.use(authenticateUser);
-app.use("/decks", decksRoutes);
+app.use("/users/:userId", validate.user, authenticate.user, userRoutes);
 
 module.exports = app;

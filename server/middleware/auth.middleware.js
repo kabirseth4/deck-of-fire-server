@@ -1,27 +1,20 @@
-const knex = require("knex")(require("../../db/knexfile"));
+const user = async (req, res, next) => {
+  const authId = req.headers.authorization;
+  const { userId } = req.params;
 
-const authenticateUser = async (req, res, next) => {
-  const userId = Number(req.headers.authorization);
-
-  if (!userId) {
+  if (!authId) {
     return res.status(401).json({
-      message: "Invalid authorization: no authorization header.",
+      message: "Invalid authorization: no auth token.",
     });
   }
 
-  try {
-    const user = await knex("user").where({ id: userId }).first();
-
-    if (!user) {
-      return res.status(401).json({
-        message: `Invalid authorization: user with id ${userId} not found.`,
-      });
-    }
-
-    next();
-  } catch (error) {
-    return res.status(500).json({ message: "Error authorizing user.", error });
+  if (authId !== userId) {
+    return res.status(401).json({
+      message: `Invalid authorization: auth token not valid for user with ID ${userId}.`,
+    });
   }
+
+  next();
 };
 
-module.exports = { authenticateUser };
+module.exports = { user };
