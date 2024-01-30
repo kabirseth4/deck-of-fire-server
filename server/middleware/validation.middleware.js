@@ -1,5 +1,6 @@
 const userModel = require("../models/user.model");
 const deckModel = require("../models/deck.model");
+const ruleModel = require("../models/rule.model");
 
 const user = async (req, res, next) => {
   const { userId } = req.params;
@@ -75,4 +76,49 @@ const ruleBody = async (req, res, next) => {
   next();
 };
 
-module.exports = { user, deck, deckBody, ruleBody };
+const deckRuleBody = async (req, res, next) => {
+  const { userId } = req.params;
+  const rules = req.body;
+  const mappedRules = [];
+
+  for (let i = 0; i < rules.length; i++) {
+    const { rule_id, occurences, penalty } = rules[i];
+
+    // Validate request body properties
+    if (!rule_id) {
+      return res.status(400).json({
+        message: "Each rule in request body must include a rule_id.",
+      });
+    }
+    if (typeof occurences !== "undefined" && isNaN(occurences)) {
+      return res.status(400).json({
+        message: "Occurences must be a number.",
+      });
+    }
+    if (typeof penalty !== "undefined" && isNaN(penalty)) {
+      return res.status(400).json({
+        message: "Penalty must be a number.",
+      });
+    }
+
+    // Validate rule
+    const rule = await ruleModel.getOne(rule_id);
+    if (!rule) {
+      return res.status(400).json({
+        message: `Could not find rule with ID ${rule_id}.`,
+      });
+    }
+    if (rule.user_id !== Number(userId)) {
+      return res.status(401).json({
+        message: `Invalid authorization for rule with ID ${rule_id}.`,
+      });
+    }
+
+    mappedRules.push({ rule_id, occurences, penalty });
+  }
+
+  req.body = mappedRules;
+  next();
+};
+
+module.exports = { user, deck, deckBody, ruleBody, deckRuleBody };

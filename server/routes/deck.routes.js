@@ -6,11 +6,13 @@ const {
   allDecks,
   singleDeck,
   newDeck,
+  rulesToDeck,
 } = require("../controllers/deck.controller");
 
 router.route("/").get(allDecks).post(validate.deckBody, newDeck);
 
 router.use("/:deckId", validate.deck);
 router.route("/:deckId").get(singleDeck);
+router.route("/:deckId/rules").post(validate.deckRuleBody, rulesToDeck);
 
 module.exports = router;

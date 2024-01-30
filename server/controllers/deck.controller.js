@@ -39,10 +39,28 @@ const newDeck = async (req, res) => {
 
   try {
     const createdDeck = await deckModel.addNew(newDeck);
-    res.json(createdDeck);
+    res.status(201).json(createdDeck);
   } catch (error) {
     res.status(500).json({ message: "Unable to create new deck.", error });
   }
 };
 
-module.exports = { allDecks, singleDeck, newDeck };
+const rulesToDeck = async (req, res) => {
+  const { deckId } = req.params;
+  const rules = req.body;
+
+  try {
+    const createdDeckRules = await Promise.all(
+      rules.map(async (rule) => {
+        const createdDeckRule = await deckModel.addRule(deckId, rule);
+        return createdDeckRule;
+      })
+    );
+
+    res.json(createdDeckRules);
+  } catch (error) {
+    res.status(500).json({ message: "Unable to add rules to deck.", error });
+  }
+};
+
+module.exports = { allDecks, singleDeck, newDeck, rulesToDeck };

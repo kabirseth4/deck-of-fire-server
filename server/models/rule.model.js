@@ -7,13 +7,19 @@ const getAll = async (userId) => {
   return rules;
 };
 
+const getOne = async (ruleId) => {
+  const rule = await knex("rule")
+    .select("id", "name", "description", "user_id")
+    .where({ id: ruleId })
+    .first();
+  return rule;
+};
+
 const addNew = async (newRule) => {
-  const newRuleIds = await knex("rule").insert(newRule);
-  const createdRule = await knex("rule")
-    .where({ id: newRuleIds[0] })
-    .first()
-    .select("id", "name", "description");
+  const newRuleId = await knex("rule").insert(newRule);
+  const createdRule = await getOne(newRuleId[0]);
+  delete createdRule.user_id;
   return createdRule;
 };
 
-module.exports = { getAll, addNew };
+module.exports = { getAll, getOne, addNew };

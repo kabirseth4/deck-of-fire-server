@@ -30,4 +30,15 @@ const addNew = async (newDeck) => {
   return createdDeck;
 };
 
-module.exports = { getAll, getOne, getRules, addNew };
+const addRule = async (deckId, rule) => {
+  const deckRule = { ...rule, deck_id: deckId };
+  const newDeckRuleId = await knex("deck_rule").insert(deckRule);
+
+  const createdDeckRule = await knex("deck_rule")
+    .whereIn("id", newDeckRuleId)
+    .first()
+    .select("id", "deck_id", "rule_id", "occurences", "penalty");
+  return createdDeckRule;
+};
+
+module.exports = { getAll, getOne, getRules, addNew, addRule };

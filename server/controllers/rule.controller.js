@@ -17,7 +17,7 @@ const newRule = async (req, res) => {
 
   try {
     const createdRule = await ruleModel.addNew(newRule);
-    res.json(createdRule);
+    res.status(201).json(createdRule);
   } catch (error) {
     res.status(500).json({ message: "Unable to create new rule.", error });
   }
