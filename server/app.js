@@ -4,7 +4,7 @@ require("dotenv").config();
 const cors = require("cors");
 
 const { authenticateUser } = require("./middleware/auth.middleware");
-const decksRoutes = require("./routes/decks.routes");
+const decksRoutes = require("./routes/deck.routes");
 
 app.use(express.json());
 app.use(cors());
