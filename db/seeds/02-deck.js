@@ -1,4 +1,4 @@
-const deckData = require("../seed-data/deck-data");
+const deckData = require("../seed-data/deck.data");
 
 /**
  * @param { import("knex").Knex } knex

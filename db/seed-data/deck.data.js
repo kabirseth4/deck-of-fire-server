@@ -5,6 +5,7 @@ module.exports = [
     user_id: 1,
     is_scored: false,
     is_custom: true,
+    is_playable: true,
   },
   {
     id: 2,
@@ -12,6 +13,7 @@ module.exports = [
     user_id: 1,
     is_scored: true,
     is_custom: true,
+    is_playable: true,
   },
   {
     id: 3,
@@ -19,6 +21,7 @@ module.exports = [
     user_id: 1,
     is_scored: false,
     is_custom: false,
+    is_playable: true,
   },
   {
     id: 4,
@@ -26,12 +29,22 @@ module.exports = [
     user_id: 1,
     is_scored: true,
     is_custom: false,
+    is_playable: true,
   },
   {
     id: 5,
+    name: "Empty deck",
+    user_id: 1,
+    is_scored: false,
+    is_custom: true,
+    is_playable: false,
+  },
+  {
+    id: 6,
     name: "New deck",
     user_id: 2,
     is_scored: false,
     is_custom: true,
+    is_playable: false,
   },
 ];

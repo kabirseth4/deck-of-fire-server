@@ -1,4 +1,4 @@
-const userData = require("../seed-data/user-data");
+const userData = require("../seed-data/user.data");
 
 /**
  * @param { import("knex").Knex } knex
