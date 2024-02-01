@@ -27,15 +27,15 @@ const deck = async (req, res, next) => {
   const { userId, deckId } = req.params;
 
   try {
-    const deck = await deckModel.getOne(deckId);
+    const deckData = await deckModel.getOne(deckId);
 
-    if (!deck) {
+    if (!deckData) {
       return res
         .status(404)
         .json({ message: `Deck with ID ${deckId} not found.` });
     }
 
-    if (String(deck.user_id) !== userId) {
+    if (String(deckData.user_id) !== userId) {
       return res.status(401).json({
         message: `Invalid authorization for deck with ID ${deckId}.`,
       });
@@ -77,12 +77,23 @@ const ruleBody = async (req, res, next) => {
 };
 
 const deckRuleBody = async (req, res, next) => {
-  const { userId } = req.params;
+  const { userId, deckId } = req.params;
   const rules = req.body;
+
+  const deckToUpdate = await deckModel.getOne(deckId);
+  const deckToUpdateRules = await deckModel.getRules(deckId, "rule.id");
+
+  if (!deckToUpdate.is_custom && deckToUpdateRules.length + rules.length > 13) {
+    return res.status(400).json({
+      message: "Number of rules for a standard deck cannot exceed 13.",
+    });
+  }
+
   const mappedRules = [];
 
   for (let i = 0; i < rules.length; i++) {
     const { rule_id, occurences, penalty } = rules[i];
+    let mappedRule = { rule_id };
 
     // Validate request body properties
     if (!rule_id) {
@@ -90,31 +101,48 @@ const deckRuleBody = async (req, res, next) => {
         message: "Each rule in request body must include a rule_id.",
       });
     }
-    if (typeof occurences !== "undefined" && isNaN(occurences)) {
-      return res.status(400).json({
-        message: "Occurences must be a number.",
-      });
+    if (deckToUpdate.is_custom) {
+      if (isNaN(occurences) || occurences < 1) {
+        return res.status(400).json({
+          message:
+            "Each rule for a custom deck must include ccurences, which must be a positive number.",
+        });
+      }
+      mappedRule.occurences = occurences;
     }
-    if (typeof penalty !== "undefined" && isNaN(penalty)) {
-      return res.status(400).json({
-        message: "Penalty must be a number.",
-      });
+    if (deckToUpdate.is_scored) {
+      if (isNaN(penalty) || penalty < 1) {
+        return res.status(400).json({
+          message:
+            "Each rule for a scored deck must include a penalty, which must be a positive number.",
+        });
+      }
+      mappedRule.penalty = penalty;
     }
 
     // Validate rule
     const rule = await ruleModel.getOne(rule_id);
     if (!rule) {
       return res.status(400).json({
-        message: `Could not find rule with ID ${rule_id}.`,
+        message: `Could not find rule ${rule_id}.`,
       });
     }
     if (rule.user_id !== Number(userId)) {
       return res.status(401).json({
-        message: `Invalid authorization for rule with ID ${rule_id}.`,
+        message: `Invalid authorization for rule ${rule_id}.`,
       });
     }
 
-    mappedRules.push({ rule_id, occurences, penalty });
+    let isRuleAdded = false;
+    deckToUpdateRules.forEach((existingRule) => {
+      if (existingRule.id === rule_id) isRuleAdded = true;
+    });
+    if (isRuleAdded)
+      return res.status(400).json({
+        message: `Rule ${rule_id} has already been added to deck ${deckId}.`,
+      });
+
+    mappedRules.push(mappedRule);
   }
 
   req.body = mappedRules;

@@ -49,13 +49,31 @@ const rulesToDeck = async (req, res) => {
   const { deckId } = req.params;
   const rules = req.body;
 
+  const deckToUpdate = await deckModel.getOne(deckId);
+
+  const ruleColumns = ["id", "rule_id", "deck_id"];
+  if (deckToUpdate.is_custom) ruleColumns.push("occurences");
+  if (deckToUpdate.is_scored) ruleColumns.push("penalty");
+
   try {
     const createdDeckRules = await Promise.all(
       rules.map(async (rule) => {
-        const createdDeckRule = await deckModel.addRule(deckId, rule);
+        const createdDeckRule = await deckModel.addRule(
+          deckId,
+          rule,
+          ruleColumns
+        );
         return createdDeckRule;
       })
     );
+
+    const updatedDeckRules = await deckModel.getRules(deckId);
+    if (deckToUpdate.is_custom && updatedDeckRules.length > 0) {
+      await deckModel.setAsPlayable(deckId);
+    }
+    if (!deckToUpdate.is_custom && updatedDeckRules.length === 13) {
+      await deckModel.setAsPlayable(deckId);
+    }
 
     res.json(createdDeckRules);
   } catch (error) {
