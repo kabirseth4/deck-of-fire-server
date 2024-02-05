@@ -18,7 +18,7 @@ Dependecies:
 
 ### Get all user decks
 
-```http
+```
   GET /users/${userId}/decks
 ```
 
@@ -47,14 +47,13 @@ Example response body:
       "is_scored": 1,
       "is_custom": 1,
       "is_playable": 1
-  },
-  {...
+  }
 ]
 ```
 
 ### Post new deck
 
-```http
+```
   Post /users/${userId}/decks
 ```
 
@@ -96,7 +95,7 @@ Example response body:
 
 ### Get single user deck
 
-```http
+```
   GET /users/${userId}/decks/${deckId}
 ```
 
@@ -130,15 +129,14 @@ Example response body:
       "name": "Rule 3",
       "description": "This is rule number 3.",
       "occurences": 2
-    },
-    {...
+    }
   ]
 }
 ```
 
 ### Get all user rules
 
-```http
+```
   GET /users/${userId}/rules
 ```
 
@@ -163,14 +161,13 @@ Example response body:
     "id": 2,
     "name": "Rule 2",
     "description": "This is rule number 2."
-  },
-  {...
+  }
 ]
 ```
 
 ### Post new rule
 
-```http
+```
   Post /users/${userId}/rules
 ```
 
@@ -208,7 +205,7 @@ Example response body:
 
 ### Post rules to deck
 
-```http
+```
   Post /users/${userId}/decks/${deckId}/rules
 ```
 
@@ -240,8 +237,7 @@ Example request body:
     "rule_id": 2,
     "occurences": 3,
     "penalty": 1
-  },
-  {...
+  }
 ]
 ```
 
@@ -262,8 +258,7 @@ Example response body:
     "deck_id": 2,
     "occurences": 3,
     "penalty": 1
-  },
-  {...
+  }
 ]
 ```
 
