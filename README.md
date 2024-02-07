@@ -118,17 +118,17 @@ Example response body:
   "is_scored": 0,
   "is_custom": 1,
   "is_playable": 1,
-  "rules": [
+  "cards": [
     {
       "id": 1,
-      "name": "Rule 1",
-      "description": "This is rule number 1.",
+      "name": "Card 1",
+      "description": "This is card number 1.",
       "occurences": 1
     },
     {
       "id": 3,
-      "name": "Rule 3",
-      "description": "This is rule number 3.",
+      "name": "Card 3",
+      "description": "This is card number 3.",
       "occurences": 2
     },
     {...
@@ -136,10 +136,10 @@ Example response body:
 }
 ```
 
-### Get all user rules
+### Get all user cards
 
 ```http
-  GET /users/${userId}/rules
+  GET /users/${userId}/cards
 ```
 
 | Parameter | Type     | Description           |
@@ -156,22 +156,22 @@ Example response body:
 [
   {
     "id": 1,
-    "name": "Rule 1",
-    "description": "This is rule number 1."
+    "name": "Card 1",
+    "description": "This is card number 1."
   },
   {
     "id": 2,
-    "name": "Rule 2",
-    "description": "This is rule number 2."
+    "name": "Card 2",
+    "description": "This is card number 2."
   },
   {...
 ]
 ```
 
-### Post new rule
+### Post new card
 
 ```http
-  Post /users/${userId}/rules
+  Post /users/${userId}/cards
 ```
 
 | Parameter | Type     | Description           |
@@ -184,15 +184,15 @@ Example response body:
 
 | Body          | Type     | Description                           |
 | :------------ | :------- | :------------------------------------ |
-| `name`        | `string` | **Required** Name of new rule.        |
-| `description` | `string` | **Required** Description of new rule. |
+| `name`        | `string` | **Required** Name of new card.        |
+| `description` | `string` | **Required** Description of new card. |
 
 Example request body:
 
 ```json
 {
-  "name": "Posted rule",
-  "description": "This is a posted rule"
+  "name": "Posted card",
+  "description": "This is a posted card"
 }
 ```
 
@@ -201,15 +201,15 @@ Example response body:
 ```json
 {
   "id": 3,
-  "name": "Posted rule",
-  "description": "This is a posted rule"
+  "name": "Posted card",
+  "description": "This is a posted card"
 }
 ```
 
-### Post rules to deck
+### Post cards to deck
 
 ```http
-  Post /users/${userId}/decks/${deckId}/rules
+  Post /users/${userId}/decks/${deckId}/cards
 ```
 
 | Parameter | Type     | Description           |
@@ -223,21 +223,21 @@ Example response body:
 
 | Body         | Type     | Description                                                       |
 | :----------- | :------- | :---------------------------------------------------------------- |
-| `rule_id`    | `number` | **Required** Id of rule to add.                                   |
-| `occurences` | `number` | **Optional** Occurences of rule. Only required if deck is custom. |
-| `penalty`    | `number` | **Optional** Penalty for rule. Only required is deck is scored.   |
+| `card_id`    | `number` | **Required** Id of card to add.                                   |
+| `occurences` | `number` | **Optional** Occurences of card. Only required if deck is custom. |
+| `penalty`    | `number` | **Optional** Penalty for card. Only required is deck is scored.   |
 
 Example request body:
 
 ```json
 [
   {
-    "rule_id": 1,
+    "card_id": 1,
     "occurences": 5,
     "penalty": 3
   },
   {
-    "rule_id": 2,
+    "card_id": 2,
     "occurences": 3,
     "penalty": 1
   },
@@ -251,14 +251,14 @@ Example response body:
 [
   {
     "id": 5,
-    "rule_id": 1,
+    "card_id": 1,
     "deck_id": 2,
     "occurences": 5,
     "penalty": 3
   },
   {
     "id": 6,
-    "rule_id": 2,
+    "card_id": 2,
     "deck_id": 2,
     "occurences": 3,
     "penalty": 1
@@ -270,5 +270,5 @@ Example response body:
 ## Next Steps
 
 - Implement authorisation.
-- Add edit and delete enpoints for decks, rules, and deck rules.
+- Add edit and delete enpoints for decks, cards, and deck cards.
 - Add better seed data and default deck for new users.

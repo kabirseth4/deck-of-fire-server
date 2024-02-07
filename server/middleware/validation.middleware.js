@@ -1,6 +1,6 @@
 const userModel = require("../models/user.model");
 const deckModel = require("../models/deck.model");
-const ruleModel = require("../models/rule.model");
+const cardModel = require("../models/card.model");
 
 const user = async (req, res, next) => {
   const { userId } = req.params;
@@ -63,7 +63,7 @@ const deckBody = async (req, res, next) => {
   next();
 };
 
-const ruleBody = async (req, res, next) => {
+const cardBody = async (req, res, next) => {
   const { name, description } = req.body;
 
   if (!name || !description) {
@@ -76,77 +76,77 @@ const ruleBody = async (req, res, next) => {
   next();
 };
 
-const deckRuleBody = async (req, res, next) => {
+const deckCardBody = async (req, res, next) => {
   const { userId, deckId } = req.params;
-  const rules = req.body;
+  const cards = req.body;
 
   const deckToUpdate = await deckModel.getOne(deckId);
-  const deckToUpdateRules = await deckModel.getRules(deckId, "rule.id");
+  const deckToUpdateCards = await deckModel.getCards(deckId, "card.id");
 
-  if (!deckToUpdate.is_custom && deckToUpdateRules.length + rules.length > 13) {
+  if (!deckToUpdate.is_custom && deckToUpdateCards.length + cards.length > 13) {
     return res.status(400).json({
-      message: "Number of rules for a standard deck cannot exceed 13.",
+      message: "Number of cards for a standard deck cannot exceed 13.",
     });
   }
 
-  const mappedRules = [];
+  const mappedCards = [];
 
-  for (let i = 0; i < rules.length; i++) {
-    const { rule_id, occurences, penalty } = rules[i];
-    let mappedRule = { rule_id };
+  for (let i = 0; i < cards.length; i++) {
+    const { card_id, occurences, penalty } = cards[i];
+    let mappedCard = { card_id };
 
     // Validate request body properties
-    if (!rule_id) {
+    if (!card_id) {
       return res.status(400).json({
-        message: "Each rule in request body must include a rule_id.",
+        message: "Each card in request body must include a card_id.",
       });
     }
     if (deckToUpdate.is_custom) {
       if (isNaN(occurences) || occurences < 1) {
         return res.status(400).json({
           message:
-            "Each rule for a custom deck must include ccurences, which must be a positive number.",
+            "Each card for a custom deck must include ccurences, which must be a positive number.",
         });
       }
-      mappedRule.occurences = occurences;
+      mappedCard.occurences = occurences;
     }
     if (deckToUpdate.is_scored) {
       if (isNaN(penalty) || penalty < 1) {
         return res.status(400).json({
           message:
-            "Each rule for a scored deck must include a penalty, which must be a positive number.",
+            "Each card for a scored deck must include a penalty, which must be a positive number.",
         });
       }
-      mappedRule.penalty = penalty;
+      mappedCard.penalty = penalty;
     }
 
-    // Validate rule
-    const rule = await ruleModel.getOne(rule_id);
-    if (!rule) {
+    // Validate card
+    const card = await cardModel.getOne(card_id);
+    if (!card) {
       return res.status(400).json({
-        message: `Could not find rule ${rule_id}.`,
+        message: `Could not find card ${card_id}.`,
       });
     }
-    if (rule.user_id !== Number(userId)) {
+    if (card.user_id !== Number(userId)) {
       return res.status(401).json({
-        message: `Invalid authorization for rule ${rule_id}.`,
+        message: `Invalid authorization for card ${card_id}.`,
       });
     }
 
-    let isRuleAdded = false;
-    deckToUpdateRules.forEach((existingRule) => {
-      if (existingRule.id === rule_id) isRuleAdded = true;
+    let isCardAdded = false;
+    deckToUpdateCards.forEach((existingCard) => {
+      if (existingCard.id === card_id) isCardAdded = true;
     });
-    if (isRuleAdded)
+    if (isCardAdded)
       return res.status(400).json({
-        message: `Rule ${rule_id} has already been added to deck ${deckId}.`,
+        message: `Card ${card_id} has already been added to deck ${deckId}.`,
       });
 
-    mappedRules.push(mappedRule);
+    mappedCards.push(mappedCard);
   }
 
-  req.body = mappedRules;
+  req.body = mappedCards;
   next();
 };
 
-module.exports = { user, deck, deckBody, ruleBody, deckRuleBody };
+module.exports = { user, deck, deckBody, cardBody, deckCardBody };

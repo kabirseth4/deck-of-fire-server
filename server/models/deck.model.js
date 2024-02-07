@@ -15,12 +15,12 @@ const getOne = async (deckId) => {
   return deck;
 };
 
-const getRules = async (deckId, columns) => {
-  const rules = await knex("rule")
-    .join("deck_rule", "deck_rule.rule_id", "rule.id")
+const getCards = async (deckId, columns) => {
+  const cards = await knex("card")
+    .join("deck_card", "deck_card.card_id", "card.id")
     .where({ deck_id: deckId })
     .select(columns);
-  return rules;
+  return cards;
 };
 
 const addNew = async (newDeck) => {
@@ -30,19 +30,19 @@ const addNew = async (newDeck) => {
   return createdDeck;
 };
 
-const addRule = async (deckId, rule, ruleColumns) => {
-  const deckRule = { ...rule, deck_id: deckId };
-  const newDeckRuleId = await knex("deck_rule").insert(deckRule);
+const addCard = async (deckId, card, cardColumns) => {
+  const deckCard = { ...card, deck_id: deckId };
+  const newDeckCardId = await knex("deck_card").insert(deckCard);
 
-  const createdDeckRule = await knex("deck_rule")
-    .whereIn("id", newDeckRuleId)
+  const createdDeckCard = await knex("deck_card")
+    .whereIn("id", newDeckCardId)
     .first()
-    .select(ruleColumns);
-  return createdDeckRule;
+    .select(cardColumns);
+  return createdDeckCard;
 };
 
 const setAsPlayable = async (deckId) => {
   await knex("deck").update({ is_playable: true }).where({ id: deckId });
 };
 
-module.exports = { getAll, getOne, getRules, addNew, addRule, setAsPlayable };
+module.exports = { getAll, getOne, getCards, addNew, addCard, setAsPlayable };

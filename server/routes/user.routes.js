@@ -2,9 +2,9 @@ const express = require("express");
 const router = express.Router({ mergeParams: true });
 
 const deckRoutes = require("./deck.routes");
-const ruleRoutes = require("./rule.routes");
+const cardRoutes = require("./card.routes");
 
 router.use("/decks", deckRoutes);
-router.use("/rules", ruleRoutes);
+router.use("/cards", cardRoutes);
 
 module.exports = router;

@@ -3,7 +3,7 @@
  * @returns { Promise<void> }
  */
 exports.up = function (knex) {
-  return knex.schema.createTable("deck_rule", (table) => {
+  return knex.schema.createTable("deck_card", (table) => {
     table.increments("id").primary();
     table.integer("occurences").unsigned();
     table.integer("penalty").unsigned();
@@ -14,9 +14,9 @@ exports.up = function (knex) {
       .onDelete("CASCADE")
       .onUpdate("CASCADE");
     table
-      .integer("rule_id")
+      .integer("card_id")
       .unsigned()
-      .references("rule.id")
+      .references("card.id")
       .onDelete("CASCADE")
       .onUpdate("CASCADE");
     table.timestamp("created_at").defaultTo(knex.fn.now());
@@ -31,5 +31,5 @@ exports.up = function (knex) {
  * @returns { Promise<void> }
  */
 exports.down = function (knex) {
-  return knex.schema.dropTable("deck_rule");
+  return knex.schema.dropTable("deck_card");
 };
