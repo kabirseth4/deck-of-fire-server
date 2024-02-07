@@ -2,7 +2,7 @@ module.exports = [
   {
     id: 1,
     name: "Custom deck",
-    user_id: 1,
+    user_id: 2,
     is_scored: false,
     is_custom: true,
     is_playable: true,
@@ -10,7 +10,7 @@ module.exports = [
   {
     id: 2,
     name: "Scored custom deck",
-    user_id: 1,
+    user_id: 2,
     is_scored: true,
     is_custom: true,
     is_playable: true,
@@ -18,7 +18,7 @@ module.exports = [
   {
     id: 3,
     name: "Standard deck",
-    user_id: 1,
+    user_id: 2,
     is_scored: false,
     is_custom: false,
     is_playable: true,
@@ -26,7 +26,7 @@ module.exports = [
   {
     id: 4,
     name: "Scored standard deck",
-    user_id: 1,
+    user_id: 2,
     is_scored: true,
     is_custom: false,
     is_playable: true,
@@ -34,7 +34,7 @@ module.exports = [
   {
     id: 5,
     name: "Empty deck",
-    user_id: 1,
+    user_id: 2,
     is_scored: false,
     is_custom: true,
     is_playable: false,
@@ -46,5 +46,21 @@ module.exports = [
     is_scored: false,
     is_custom: true,
     is_playable: false,
+  },
+  {
+    id: 7,
+    name: "The Deck of Fire",
+    user_id: 1,
+    is_scored: false,
+    is_custom: false,
+    is_playable: true,
+  },
+  {
+    id: 8,
+    name: "Sober Deck",
+    user_id: 1,
+    is_scored: true,
+    is_custom: true,
+    is_playable: true,
   },
 ];
