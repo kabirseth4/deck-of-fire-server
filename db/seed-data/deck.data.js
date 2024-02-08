@@ -57,7 +57,7 @@ module.exports = [
   },
   {
     id: 8,
-    name: "Sober Deck",
+    name: "No Drink Deck",
     user_id: 1,
     is_scored: true,
     is_custom: true,
