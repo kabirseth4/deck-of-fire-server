@@ -2,8 +2,8 @@ const express = require("express");
 const router = express.Router({ mergeParams: true });
 
 const validate = require("../middleware/validation.middleware");
-const { allRules, newRule } = require("../controllers/rule.controller");
+const { allCards, newCard } = require("../controllers/card.controller");
 
-router.route("/").get(allRules).post(validate.ruleBody, newRule);
+router.route("/").get(allCards).post(validate.cardBody, newCard);
 
 module.exports = router;

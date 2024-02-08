@@ -18,13 +18,13 @@ const singleDeck = async (req, res) => {
     const deckInfo = await deckModel.getOne(deckId);
     delete deckInfo.user_id;
 
-    const ruleColumns = ["rule.id", "name", "description"];
-    if (deckInfo.is_custom) ruleColumns.push("occurences");
-    if (deckInfo.is_scored) ruleColumns.push("penalty");
+    const cardColumns = ["card.id", "name", "description"];
+    if (deckInfo.is_custom) cardColumns.push("occurences");
+    if (deckInfo.is_scored) cardColumns.push("penalty");
 
-    const rules = await deckModel.getRules(deckId, ruleColumns);
+    const cards = await deckModel.getCards(deckId, cardColumns);
 
-    const deck = { ...deckInfo, rules };
+    const deck = { ...deckInfo, cards };
     res.json(deck);
   } catch (error) {
     res
@@ -45,40 +45,40 @@ const newDeck = async (req, res) => {
   }
 };
 
-const rulesToDeck = async (req, res) => {
+const cardsToDeck = async (req, res) => {
   const { deckId } = req.params;
-  const rules = req.body;
+  const cards = req.body;
 
   const deckToUpdate = await deckModel.getOne(deckId);
 
-  const ruleColumns = ["id", "rule_id", "deck_id"];
-  if (deckToUpdate.is_custom) ruleColumns.push("occurences");
-  if (deckToUpdate.is_scored) ruleColumns.push("penalty");
+  const cardColumns = ["id", "card_id", "deck_id"];
+  if (deckToUpdate.is_custom) cardColumns.push("occurences");
+  if (deckToUpdate.is_scored) cardColumns.push("penalty");
 
   try {
-    const createdDeckRules = await Promise.all(
-      rules.map(async (rule) => {
-        const createdDeckRule = await deckModel.addRule(
+    const createdDeckCards = await Promise.all(
+      cards.map(async (card) => {
+        const createdDeckCard = await deckModel.addCard(
           deckId,
-          rule,
-          ruleColumns
+          card,
+          cardColumns
         );
-        return createdDeckRule;
+        return createdDeckCard;
       })
     );
 
-    const updatedDeckRules = await deckModel.getRules(deckId);
-    if (deckToUpdate.is_custom && updatedDeckRules.length > 0) {
+    const updatedDeckCards = await deckModel.getCards(deckId);
+    if (deckToUpdate.is_custom && updatedDeckCards.length > 0) {
       await deckModel.setAsPlayable(deckId);
     }
-    if (!deckToUpdate.is_custom && updatedDeckRules.length === 13) {
+    if (!deckToUpdate.is_custom && updatedDeckCards.length === 13) {
       await deckModel.setAsPlayable(deckId);
     }
 
-    res.json(createdDeckRules);
+    res.json(createdDeckCards);
   } catch (error) {
-    res.status(500).json({ message: "Unable to add rules to deck.", error });
+    res.status(500).json({ message: "Unable to add cards to deck.", error });
   }
 };
 
-module.exports = { allDecks, singleDeck, newDeck, rulesToDeck };
+module.exports = { allDecks, singleDeck, newDeck, cardsToDeck };
