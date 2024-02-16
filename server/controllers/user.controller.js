@@ -3,6 +3,15 @@ const jwt = require("jsonwebtoken");
 
 const userModel = require("../models/user.model");
 
+const allUsers = async (_req, res) => {
+  try {
+    const users = await userModel.getAll();
+    return res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: "Unable to retrieve users.", error });
+  }
+};
+
 const registerUser = async (req, res) => {
   const { first_name, last_name, username, email, password } = req.body;
 
@@ -20,7 +29,7 @@ const registerUser = async (req, res) => {
     const createdUser = await userModel.register(newUser);
     return res.status(201).json(createdUser);
   } catch (error) {
-    res.status(500).json({ message: "Unable to register new user." });
+    res.status(500).json({ message: "Unable to register new user.", error });
   }
 };
 
@@ -43,8 +52,8 @@ const loginUser = async (req, res) => {
 
     res.json({ token });
   } catch (error) {
-    res.status(500).json({ message: "Unable to log in user." });
+    res.status(500).json({ message: "Unable to log in user.", error });
   }
 };
 
-module.exports = { registerUser, loginUser };
+module.exports = { allUsers, registerUser, loginUser };

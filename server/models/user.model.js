@@ -1,5 +1,10 @@
 const knex = require("knex")(require("../../db/knexfile"));
 
+const getAll = async () => {
+  const users = await knex("user").select("id", "username", "email");
+  return users;
+};
+
 const getOne = async (id) => {
   const user = await knex("user").where({ id }).first();
   return user;
@@ -19,4 +24,4 @@ const register = async (newUser) => {
   return createdUser;
 };
 
-module.exports = { getOne, getOneByEmail, register };
+module.exports = { getAll, getOne, getOneByEmail, register };
