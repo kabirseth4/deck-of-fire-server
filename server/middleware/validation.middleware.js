@@ -89,6 +89,19 @@ const registerUserBody = async (req, res, next) => {
   }
 };
 
+const loginUserBody = async (req, res, next) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({
+      message: "Request body must include email and password.",
+    });
+  }
+
+  req.body = { email, password };
+  next();
+};
+
 const deckBody = async (req, res, next) => {
   const { name, is_scored, is_custom } = req.body;
 
@@ -201,6 +214,7 @@ module.exports = {
   user,
   deck,
   registerUserBody,
+  loginUserBody,
   deckBody,
   cardBody,
   deckCardBody,

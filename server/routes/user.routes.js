@@ -15,7 +15,7 @@ const {
 
 router.route("/").get(allUsers);
 router.route("/register").post(validate.registerUserBody, registerUser);
-router.route("/login").post(loginUser);
+router.route("/login").post(validate.loginUserBody, loginUser);
 
 router.use("/:userId", validate.user, authorize.user);
 router.use("/:userId/decks", deckRoutes);
