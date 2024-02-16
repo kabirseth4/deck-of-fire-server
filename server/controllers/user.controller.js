@@ -24,4 +24,27 @@ const registerUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser };
+const loginUser = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const user = await userModel.getOneByEmail(email);
+
+    const isPasswordCorrect = bcrypt.compareSync(password, user.password);
+    if (!isPasswordCorrect) {
+      return res.status(400).json({ message: "Password is incorrect" });
+    }
+
+    const token = jwt.sign(
+      { id: user.id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "28d" }
+    );
+
+    res.json({ token });
+  } catch (error) {
+    res.status(500).json({ message: "Unable to log in user." });
+  }
+};
+
+module.exports = { registerUser, loginUser };
