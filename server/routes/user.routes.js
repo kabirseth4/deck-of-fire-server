@@ -14,7 +14,7 @@ const {
 } = require("../controllers/user.controller");
 
 router.route("/").get(allUsers);
-router.route("/register").post(registerUser);
+router.route("/register").post(validate.registerUserBody, registerUser);
 router.route("/login").post(loginUser);
 
 router.use("/:userId", validate.user, authorize.user);

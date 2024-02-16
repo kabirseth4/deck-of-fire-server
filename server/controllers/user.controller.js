@@ -39,9 +39,14 @@ const loginUser = async (req, res) => {
   try {
     const user = await userModel.getOneByEmail(email);
 
+    if (!user) {
+      return res.status(401).json({ message: "Invalid login credentials" });
+    }
+
     const isPasswordCorrect = bcrypt.compareSync(password, user.password);
+
     if (!isPasswordCorrect) {
-      return res.status(400).json({ message: "Password is incorrect" });
+      return res.status(401).json({ message: "Invalid login credentials" });
     }
 
     const token = jwt.sign(

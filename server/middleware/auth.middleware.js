@@ -6,7 +6,7 @@ const user = async (req, res, next) => {
 
   if (!authHeader) {
     return res.status(401).json({
-      message: "Invalid authorization: no authorization header.",
+      message: "Please provide an authorization header.",
     });
   }
 
@@ -16,14 +16,14 @@ const user = async (req, res, next) => {
     const decodedToken = jwt.verify(authToken, process.env.JWT_SECRET);
 
     if (decodedToken.id !== userId) {
-      return res.status(401).json({
-        message: `Invalid authorization: auth token not valid for user with ID ${userId}.`,
+      return res.status(403).json({
+        message: `Authorization not valid for user with ID ${userId}.`,
       });
     }
 
     next();
   } catch (error) {
-    res.status(500).json({ message: "Unable to authorize user." });
+    res.status(500).json({ message: "Unable to authorize user.", error });
   }
 };
 
