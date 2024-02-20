@@ -18,7 +18,7 @@ const getOneByEmail = async (email) => {
 const register = async (newUser) => {
   const createdUserId = await knex("user").insert(newUser);
   const createdUser = await knex("user")
-    .select("id", "first_name", "last_name", "username", "email")
+    .select("id", "username", "email")
     .where({ id: createdUserId[0] })
     .first();
   return createdUser;
