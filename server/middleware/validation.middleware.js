@@ -2,6 +2,8 @@ const userModel = require("../models/user.model");
 const deckModel = require("../models/deck.model");
 const cardModel = require("../models/card.model");
 
+const { validateEmail } = require("../utils/validation.utils");
+
 const user = async (req, res, next) => {
   const { userId } = req.params;
 
@@ -60,6 +62,12 @@ const registerUserBody = async (req, res, next) => {
     });
   }
 
+  if (!validateEmail(email)) {
+    return res.status(400).json({
+      message: "Email must be a valid format.",
+    });
+  }
+
   try {
     const existingUsers = await userModel.getAll();
 
@@ -95,6 +103,12 @@ const loginUserBody = async (req, res, next) => {
   if (!email || !password) {
     return res.status(400).json({
       message: "Request body must include email and password.",
+    });
+  }
+
+  if (!validateEmail(email)) {
+    return res.status(400).json({
+      message: "Email must be a valid format.",
     });
   }
 
