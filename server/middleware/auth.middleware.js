@@ -23,7 +23,14 @@ const user = async (req, res, next) => {
 
     next();
   } catch (error) {
-    res.status(500).json({ message: "Unable to authorize user.", error });
+    if (error.name === "TokenExpiredError") {
+      return res
+        .status(401)
+        .json({ message: "Token expired. Please log in again." });
+    }
+    return res
+      .status(500)
+      .json({ message: "Unable to authorize user.", error });
   }
 };
 
