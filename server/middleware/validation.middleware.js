@@ -53,12 +53,11 @@ const deck = async (req, res, next) => {
 };
 
 const registerUserBody = async (req, res, next) => {
-  const { first_name, last_name, username, email, password } = req.body;
+  const { username, email, password } = req.body;
 
-  if (!first_name || !last_name || !username || !email || !password) {
+  if (!username || !email || !password) {
     return res.status(400).json({
-      message:
-        "Request body must include first_name, last_name, username, email, and password.",
+      message: "Request body must include username, email, and password.",
     });
   }
 
@@ -78,17 +77,19 @@ const registerUserBody = async (req, res, next) => {
     });
 
     if (!isUnique.email) {
-      return res
-        .status(400)
-        .json({ message: `Account with email ${email} already exists.` });
+      return res.status(409).json({
+        type: "EMAIL_TAKEN",
+        message: `Account with email ${email} already exists.`,
+      });
     }
     if (!isUnique.username) {
-      return res
-        .status(400)
-        .json({ message: `Username ${username} is already taken.` });
+      return res.status(409).json({
+        type: "USERNAME_TAKEN",
+        message: `Username ${username} is already taken.`,
+      });
     }
 
-    req.body = { first_name, last_name, username, email, password };
+    req.body = { username, email, password };
     next();
   } catch (error) {
     res

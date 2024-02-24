@@ -13,7 +13,6 @@ const {
   loginUser,
 } = require("../controllers/user.controller");
 
-router.route("/").get(allUsers);
 router.route("/register").post(validate.registerUserBody, registerUser);
 router.route("/login").post(validate.loginUserBody, loginUser);
 

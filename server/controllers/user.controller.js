@@ -3,23 +3,12 @@ const jwt = require("jsonwebtoken");
 
 const userModel = require("../models/user.model");
 
-const allUsers = async (_req, res) => {
-  try {
-    const users = await userModel.getAll();
-    return res.json(users);
-  } catch (error) {
-    res.status(500).json({ message: "Unable to retrieve users.", error });
-  }
-};
-
 const registerUser = async (req, res) => {
-  const { first_name, last_name, username, email, password } = req.body;
+  const { username, email, password } = req.body;
 
   const hashedPassword = bcrypt.hashSync(password, 6);
 
   const newUser = {
-    first_name,
-    last_name,
     username,
     email,
     password: hashedPassword,
@@ -61,4 +50,4 @@ const loginUser = async (req, res) => {
   }
 };
 
-module.exports = { allUsers, registerUser, loginUser };
+module.exports = { registerUser, loginUser };
