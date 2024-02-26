@@ -21,26 +21,29 @@ const registerUser = async (req, res) => {
   try {
     const createdUser = await userModel.register(newUser);
 
-    // Add default cards
-    const addedCardIds = await Promise.all(
-      defaultCards.map(async (card) => {
-        const cardToAdd = { ...card, user_id: createdUser.id };
-        const addedCard = await cardModel.addNew(cardToAdd);
-        return addedCard.id;
-      })
-    );
-
     // Add default deck
     const defaultUserDeck = { ...defaultDeck, user_id: createdUser.id };
     const addedDeck = await deckModel.addNew(defaultUserDeck);
 
-    // Add default cards to default deck and set as playable
-    await Promise.all(
-      addedCardIds.map(async (cardId) => {
-        const cardToAdd = { card_id: cardId, deck_id: addedDeck.id };
-        await deckModel.addCard(addedDeck.id, cardToAdd);
-      })
-    );
+    // Chunk cards into groups of 7 or less
+    const chunkSize = 7;
+    const cardChunks = [];
+    for (let i = 0; i < defaultCards.length; i += chunkSize) {
+      cardChunks.push(defaultCards.slice(i, i + chunkSize));
+    }
+
+    // Create and add cards to deck
+    for (const chunk of cardChunks) {
+      await Promise.all(
+        chunk.map(async (card) => {
+          const cardToCreate = { ...card, user_id: createdUser.id };
+          const createdCard = await cardModel.addNew(cardToCreate);
+          const cardToAdd = { card_id: createdCard.id, deck_id: addedDeck.id };
+          await deckModel.addCard(addedDeck.id, cardToAdd);
+        })
+      );
+    }
+
     await deckModel.setAsPlayable(addedDeck.id);
 
     return res.status(201).json(createdUser);
