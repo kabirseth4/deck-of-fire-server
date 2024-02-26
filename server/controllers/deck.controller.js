@@ -49,13 +49,13 @@ const cardsToDeck = async (req, res) => {
   const { deckId } = req.params;
   const cards = req.body;
 
-  const deckToUpdate = await deckModel.getOne(deckId);
-
-  const cardColumns = ["id", "card_id", "deck_id"];
-  if (deckToUpdate.is_custom) cardColumns.push("occurences");
-  if (deckToUpdate.is_scored) cardColumns.push("penalty");
-
   try {
+    const deckToUpdate = await deckModel.getOne(deckId);
+
+    const cardColumns = ["id", "card_id", "deck_id"];
+    if (deckToUpdate.is_custom) cardColumns.push("occurences");
+    if (deckToUpdate.is_scored) cardColumns.push("penalty");
+
     const createdDeckCards = await Promise.all(
       cards.map(async (card) => {
         const createdDeckCard = await deckModel.addCard(

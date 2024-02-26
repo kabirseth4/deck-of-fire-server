@@ -2,12 +2,16 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const userModel = require("../models/user.model");
+const deckModel = require("../models/deck.model");
+const cardModel = require("../models/card.model");
+
+const defaultCards = require("../data/default-cards.data");
+const defaultDeck = require("../data/default-deck.data");
 
 const registerUser = async (req, res) => {
   const { username, email, password } = req.body;
 
   const hashedPassword = bcrypt.hashSync(password, 6);
-
   const newUser = {
     username,
     email,
@@ -16,6 +20,29 @@ const registerUser = async (req, res) => {
 
   try {
     const createdUser = await userModel.register(newUser);
+
+    // Add default cards
+    const addedCardIds = await Promise.all(
+      defaultCards.map(async (card) => {
+        const cardToAdd = { ...card, user_id: createdUser.id };
+        const addedCard = await cardModel.addNew(cardToAdd);
+        return addedCard.id;
+      })
+    );
+
+    // Add default deck
+    const defaultUserDeck = { ...defaultDeck, user_id: createdUser.id };
+    const addedDeck = await deckModel.addNew(defaultUserDeck);
+
+    // Add default cards to default deck and set as playable
+    await Promise.all(
+      addedCardIds.map(async (cardId) => {
+        const cardToAdd = { card_id: cardId, deck_id: addedDeck.id };
+        await deckModel.addCard(addedDeck.id, cardToAdd);
+      })
+    );
+    await deckModel.setAsPlayable(addedDeck.id);
+
     return res.status(201).json(createdUser);
   } catch (error) {
     res.status(500).json({ message: "Unable to register new user.", error });
