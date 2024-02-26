@@ -30,7 +30,7 @@ const addNew = async (newDeck) => {
   return createdDeck;
 };
 
-const addCard = async (deckId, card, cardColumns) => {
+const addCard = async (deckId, card, cardColumns = "*") => {
   const deckCard = { ...card, deck_id: deckId };
   const newDeckCardId = await knex("deck_card").insert(deckCard);
 
