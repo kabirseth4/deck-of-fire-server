@@ -25,8 +25,8 @@ const registerUser = async (req, res) => {
     const defaultUserDeck = { ...defaultDeck, user_id: createdUser.id };
     const addedDeck = await deckModel.addNew(defaultUserDeck);
 
-    // Chunk cards into groups of 7 or less
-    const chunkSize = 7;
+    // Chunk cards into smaller groups
+    const chunkSize = 3;
     const cardChunks = [];
     for (let i = 0; i < defaultCards.length; i += chunkSize) {
       cardChunks.push(defaultCards.slice(i, i + chunkSize));
