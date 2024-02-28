@@ -1,4 +1,4 @@
-const knex = require("knex")(require("../../db/knexfile"));
+const knex = require("../configs/knex.config");
 
 const getAll = async (userId) => {
   const decks = await knex("deck")

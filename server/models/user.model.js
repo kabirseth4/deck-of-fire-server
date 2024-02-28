@@ -1,4 +1,4 @@
-const knex = require("knex")(require("../../db/knexfile"));
+const knex = require("../configs/knex.config");
 
 const getAll = async () => {
   const users = await knex("user").select("id", "username", "email");
