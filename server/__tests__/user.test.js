@@ -166,7 +166,9 @@ describe("POST /users/login", () => {
       .expect((res) => {
         expect(res.body).toEqual({
           id: 1,
-          token: expect.any(String),
+          token: expect.stringMatching(
+            /^[A-Za-z0-9-_]*\.[A-Za-z0-9-_]*\.[A-Za-z0-9-_]*$/
+          ),
         });
       });
   });
