@@ -216,4 +216,18 @@ describe("POST /users/login", () => {
       })
       .expect(401);
   });
+
+  it("returns 500 if database error", async () => {
+    await knex.migrate.rollback();
+
+    await request(app)
+      .post("/users/login")
+      .send({
+        email: "test.user@email.com",
+        password: "S00per$3cret",
+      })
+      .expect(500);
+
+    await knex.migrate.latest();
+  });
 });

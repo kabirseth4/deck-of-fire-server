@@ -63,4 +63,12 @@ module.exports = [
     is_custom: true,
     is_playable: true,
   },
+  {
+    id: 9,
+    name: "Other deck",
+    user_id: 2,
+    is_scored: false,
+    is_custom: true,
+    is_playable: false,
+  },
 ];
