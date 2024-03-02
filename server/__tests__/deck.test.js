@@ -8,6 +8,27 @@ const incorrectUserId = 999;
 const authHeader = {};
 const incorrectAuthHeader = {};
 
+const userValidationTestCases = [
+  {
+    description: "returns 404 if user does not exist",
+    user: incorrectUserId,
+    header: incorrectAuthHeader,
+    status: 404,
+  },
+  {
+    description: "returns 401 if no auth header",
+    user: userId,
+    header: {},
+    status: 401,
+  },
+  {
+    description: "returns 403 if auth token is for different user",
+    user: userId,
+    header: incorrectAuthHeader,
+    status: 403,
+  },
+];
+
 beforeAll(async () => {
   await knex.migrate.latest();
 
@@ -62,22 +83,10 @@ describe("GET /users/:userId/decks", () => {
       });
   });
 
-  it("returns 404 if user does not exist", async () => {
-    await request(app)
-      .get(`/users/${incorrectUserId}/decks`)
-      .set(incorrectAuthHeader)
-      .expect(404);
-  });
-
-  it("returns 401 if no auth header", async () => {
-    await request(app).get(`/users/${userId}/decks`).expect(401);
-  });
-
-  it("returns 403 if auth token is for different user", async () => {
-    await request(app)
-      .get(`/users/${userId}/decks`)
-      .set(incorrectAuthHeader)
-      .expect(403);
+  userValidationTestCases.forEach(({ description, user, header, status }) => {
+    it(description, async () => {
+      await request(app).get(`/users/${user}/decks`).set(header).expect(status);
+    });
   });
 
   it("returns 500 if database error", async () => {
@@ -86,6 +95,79 @@ describe("GET /users/:userId/decks", () => {
     await request(app)
       .get(`/users/${userId}/decks`)
       .set(authHeader)
+      .expect(500);
+
+    await knex.migrate.latest();
+  });
+});
+
+describe("POST /users/:userId/decks", () => {
+  it("returns new deck and 201", async () => {
+    await request(app)
+      .post(`/users/${userId}/decks`)
+      .set(authHeader)
+      .send({ name: "New deck" })
+      .expect("Content-Type", /json/)
+      .expect(201)
+      .expect(({ body }) => {
+        expect(body).toEqual(
+          expect.objectContaining({
+            id: expect.any(Number),
+            name: "New deck",
+            is_custom: 0,
+            is_scored: 0,
+            is_playable: 0,
+          })
+        );
+      });
+  });
+
+  it("adds new deck to user", async () => {
+    const { body: deck } = await request(app)
+      .post(`/users/${userId}/decks`)
+      .set(authHeader)
+      .send({ name: "New deck" });
+
+    const decks = await knex("deck").where({ user_id: userId });
+
+    expect(decks).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: deck.id,
+          name: "New deck",
+          is_custom: 0,
+          is_scored: 0,
+          is_playable: 0,
+        }),
+      ])
+    );
+  });
+
+  it("returns 400 if no name in request body", async () => {
+    await request(app)
+      .post(`/users/${userId}/decks`)
+      .set(authHeader)
+      .send({})
+      .expect(400);
+  });
+
+  userValidationTestCases.forEach(({ description, user, header, status }) => {
+    it(description, async () => {
+      await request(app)
+        .post(`/users/${user}/decks`)
+        .set(header)
+        .send({ name: "New deck" })
+        .expect(status);
+    });
+  });
+
+  it("returns 500 if database error", async () => {
+    await knex.migrate.rollback();
+
+    await request(app)
+      .post(`/users/${userId}/decks`)
+      .set(authHeader)
+      .send({ name: "New deck" })
       .expect(500);
 
     await knex.migrate.latest();
@@ -227,22 +309,13 @@ describe("GET /users/:userId/decks/:deckId", () => {
       .expect(401);
   });
 
-  it("returns 404 if user does not exist", async () => {
-    await request(app)
-      .get(`/users/${incorrectUserId}/decks/${deckId}`)
-      .set(incorrectAuthHeader)
-      .expect(404);
-  });
-
-  it("returns 401 if no auth header", async () => {
-    await request(app).get(`/users/${userId}/decks/${deckId}`).expect(401);
-  });
-
-  it("returns 403 if auth token is for different user", async () => {
-    await request(app)
-      .get(`/users/${userId}/decks/${deckId}`)
-      .set(incorrectAuthHeader)
-      .expect(403);
+  userValidationTestCases.forEach(({ description, user, header, status }) => {
+    it(description, async () => {
+      await request(app)
+        .get(`/users/${user}/decks/${deckId}`)
+        .set(header)
+        .expect(status);
+    });
   });
 
   it("returns 500 if database error", async () => {
