@@ -155,8 +155,14 @@ const deckCardBody = async (req, res, next) => {
       !deckToUpdate.is_custom &&
       deckToUpdateCards.length + cards.length > 13
     ) {
-      return res.status(400).json({
+      return res.status(409).json({
         message: "Number of cards for a standard deck cannot exceed 13.",
+      });
+    }
+
+    if (!Array.isArray(cards) || cards.length < 1) {
+      return res.status(400).json({
+        message: "Request body must be an array of objects.",
       });
     }
 
@@ -194,7 +200,7 @@ const deckCardBody = async (req, res, next) => {
       // Validate card
       const card = await cardModel.getOne(card_id);
       if (!card) {
-        return res.status(400).json({
+        return res.status(404).json({
           message: `Could not find card ${card_id}.`,
         });
       }
@@ -209,7 +215,7 @@ const deckCardBody = async (req, res, next) => {
         if (existingCard.id === card_id) isCardAdded = true;
       });
       if (isCardAdded)
-        return res.status(400).json({
+        return res.status(409).json({
           message: `Card ${card_id} has already been added to deck ${deckId}.`,
         });
 

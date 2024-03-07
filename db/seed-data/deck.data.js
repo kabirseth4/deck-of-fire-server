@@ -36,7 +36,7 @@ module.exports = [
     name: "Empty deck",
     user_id: 1,
     is_scored: false,
-    is_custom: true,
+    is_custom: false,
     is_playable: false,
   },
   {
