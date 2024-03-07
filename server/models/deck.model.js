@@ -1,4 +1,4 @@
-const knex = require("knex")(require("../../db/knexfile"));
+const knex = require("../configs/knex.config");
 
 const getAll = async (userId) => {
   const decks = await knex("deck")
@@ -15,7 +15,7 @@ const getOne = async (deckId) => {
   return deck;
 };
 
-const getCards = async (deckId, columns) => {
+const getCards = async (deckId, columns = "*") => {
   const cards = await knex("card")
     .join("deck_card", "deck_card.card_id", "card.id")
     .where({ deck_id: deckId })

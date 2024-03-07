@@ -7,11 +7,7 @@ const authorize = require("../middleware/auth.middleware");
 const deckRoutes = require("./deck.routes");
 const cardRoutes = require("./card.routes");
 
-const {
-  allUsers,
-  registerUser,
-  loginUser,
-} = require("../controllers/user.controller");
+const { registerUser, loginUser } = require("../controllers/user.controller");
 
 router.route("/register").post(validate.registerUserBody, registerUser);
 router.route("/login").post(validate.loginUserBody, loginUser);

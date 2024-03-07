@@ -75,7 +75,7 @@ const cardsToDeck = async (req, res) => {
       await deckModel.setAsPlayable(deckId);
     }
 
-    res.json(createdDeckCards);
+    res.status(201).json(createdDeckCards);
   } catch (error) {
     res.status(500).json({ message: "Unable to add cards to deck.", error });
   }

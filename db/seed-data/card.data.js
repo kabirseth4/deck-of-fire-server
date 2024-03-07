@@ -189,4 +189,10 @@ module.exports = [
     description: "Everyone takes a penalty",
     user_id: 1,
   },
+  {
+    id: 31,
+    name: "User 2's card",
+    description: "This is card belongs to user 2.",
+    user_id: 2,
+  },
 ];

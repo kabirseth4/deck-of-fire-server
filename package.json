@@ -4,6 +4,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "node --watch index.js",
+    "test": "jest",
     "db:migrate": "cd db && knex migrate:latest",
     "db:rollback": "cd db && knex migrate:rollback",
     "db:seed": "cd db && knex seed:run"
@@ -17,5 +18,9 @@
     "jsonwebtoken": "^9.0.2",
     "knex": "^3.1.0",
     "mysql2": "^3.9.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^6.3.4"
   }
 }

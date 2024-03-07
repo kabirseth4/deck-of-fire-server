@@ -36,7 +36,7 @@ module.exports = [
     name: "Empty deck",
     user_id: 1,
     is_scored: false,
-    is_custom: true,
+    is_custom: false,
     is_playable: false,
   },
   {
@@ -62,5 +62,13 @@ module.exports = [
     is_scored: true,
     is_custom: true,
     is_playable: true,
+  },
+  {
+    id: 9,
+    name: "Other deck",
+    user_id: 2,
+    is_scored: false,
+    is_custom: true,
+    is_playable: false,
   },
 ];
