@@ -1,17 +1,15 @@
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+import { hashSync, compareSync } from "bcrypt";
+import jwt from "jsonwebtoken";
+import userModel from "../models/user.model.js";
+import deckModel from "../models/deck.model.js";
+import cardModel from "../models/card.model.js";
+import defaultCards from "../data/default-cards.data.js";
+import defaultDeck from "../data/default-deck.data.js";
 
-const userModel = require("../models/user.model");
-const deckModel = require("../models/deck.model");
-const cardModel = require("../models/card.model");
-
-const defaultCards = require("../data/default-cards.data");
-const defaultDeck = require("../data/default-deck.data");
-
-const registerUser = async (req, res) => {
+export const registerUser = async (req, res) => {
   const { username, email, password } = req.body;
 
-  const hashedPassword = bcrypt.hashSync(password, 6);
+  const hashedPassword = hashSync(password, 6);
   const newUser = {
     username,
     email,
@@ -52,7 +50,7 @@ const registerUser = async (req, res) => {
   }
 };
 
-const loginUser = async (req, res) => {
+export const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
@@ -62,7 +60,7 @@ const loginUser = async (req, res) => {
       return res.status(401).json({ message: "Invalid login credentials" });
     }
 
-    const isPasswordCorrect = bcrypt.compareSync(password, user.password);
+    const isPasswordCorrect = compareSync(password, user.password);
 
     if (!isPasswordCorrect) {
       return res.status(401).json({ message: "Invalid login credentials" });
@@ -79,5 +77,3 @@ const loginUser = async (req, res) => {
     res.status(500).json({ message: "Unable to log in user.", error });
   }
 };
-
-module.exports = { registerUser, loginUser };

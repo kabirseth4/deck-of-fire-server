@@ -1,13 +1,13 @@
-const express = require("express");
-const router = express.Router({ mergeParams: true });
-
-const validate = require("../middleware/validation.middleware");
-const {
+import { Router } from "express";
+import validate from "../middleware/validation.middleware.js";
+import {
   allDecks,
   singleDeck,
   newDeck,
   cardsToDeck,
-} = require("../controllers/deck.controller");
+} from "../controllers/deck.controller.js";
+
+const router = Router({ mergeParams: true });
 
 router.route("/").get(allDecks).post(validate.deckBody, newDeck);
 
@@ -15,4 +15,4 @@ router.use("/:deckId", validate.deck);
 router.route("/:deckId").get(singleDeck);
 router.route("/:deckId/cards").post(validate.deckCardBody, cardsToDeck);
 
-module.exports = router;
+export default router;

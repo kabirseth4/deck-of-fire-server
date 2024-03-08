@@ -1,4 +1,4 @@
-module.exports = [
+export default [
   {
     name: "You",
     description: "Pick a person to take a penalty",

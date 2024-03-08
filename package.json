@@ -4,7 +4,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "node --watch index.js",
-    "test": "jest",
+    "test": "NODE_OPTIONS=\"--experimental-vm-modules\" jest --verbose",
     "db:migrate": "cd db && knex migrate:latest",
     "db:rollback": "cd db && knex migrate:rollback",
     "db:seed": "cd db && knex seed:run"
@@ -31,6 +31,7 @@
     ],
     "setupFilesAfterEnv": [
       "<rootDir>/server/__tests__/helpers/test.setup.js"
-    ]
+    ],
+    "transform": {}
   }
 }

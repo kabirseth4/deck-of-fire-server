@@ -1,8 +1,7 @@
-const userModel = require("../models/user.model");
-const deckModel = require("../models/deck.model");
-const cardModel = require("../models/card.model");
-
-const { validateEmail } = require("../utils/validation.utils");
+import userModel from "../models/user.model.js";
+import deckModel from "../models/deck.model.js";
+import cardModel from "../models/card.model.js";
+import { validateEmail } from "../utils/validation.utils.js";
 
 const user = async (req, res, next) => {
   const { userId } = req.params;
@@ -231,7 +230,7 @@ const deckCardBody = async (req, res, next) => {
   }
 };
 
-module.exports = {
+export default {
   user,
   deck,
   registerUserBody,

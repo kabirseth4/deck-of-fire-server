@@ -1,6 +1,6 @@
-const deckModel = require("../models/deck.model");
+import deckModel from "../models/deck.model.js";
 
-const allDecks = async (req, res) => {
+export const allDecks = async (req, res) => {
   const { userId } = req.params;
 
   try {
@@ -11,7 +11,7 @@ const allDecks = async (req, res) => {
   }
 };
 
-const singleDeck = async (req, res) => {
+export const singleDeck = async (req, res) => {
   const { deckId } = req.params;
 
   try {
@@ -33,7 +33,7 @@ const singleDeck = async (req, res) => {
   }
 };
 
-const newDeck = async (req, res) => {
+export const newDeck = async (req, res) => {
   const { userId } = req.params;
   const newDeck = { ...req.body, user_id: userId };
 
@@ -45,7 +45,7 @@ const newDeck = async (req, res) => {
   }
 };
 
-const cardsToDeck = async (req, res) => {
+export const cardsToDeck = async (req, res) => {
   const { deckId } = req.params;
   const cards = req.body;
 
@@ -80,5 +80,3 @@ const cardsToDeck = async (req, res) => {
     res.status(500).json({ message: "Unable to add cards to deck.", error });
   }
 };
-
-module.exports = { allDecks, singleDeck, newDeck, cardsToDeck };

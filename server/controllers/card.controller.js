@@ -1,6 +1,6 @@
-const cardModel = require("../models/card.model");
+import cardModel from "../models/card.model.js";
 
-const allCards = async (req, res) => {
+export const allCards = async (req, res) => {
   const { userId } = req.params;
 
   try {
@@ -11,7 +11,7 @@ const allCards = async (req, res) => {
   }
 };
 
-const newCard = async (req, res) => {
+export const newCard = async (req, res) => {
   const { userId } = req.params;
   const newCard = { ...req.body, user_id: userId };
 
@@ -22,5 +22,3 @@ const newCard = async (req, res) => {
     res.status(500).json({ message: "Unable to create new card.", error });
   }
 };
-
-module.exports = { allCards, newCard };

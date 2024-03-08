@@ -1,4 +1,4 @@
-const knex = require("../configs/knex.config");
+import knex from "../configs/knex.config.js";
 
 const getAll = async (userId) => {
   const decks = await knex("deck")
@@ -45,4 +45,4 @@ const setAsPlayable = async (deckId) => {
   await knex("deck").update({ is_playable: true }).where({ id: deckId });
 };
 
-module.exports = { getAll, getOne, getCards, addNew, addCard, setAsPlayable };
+export default { getAll, getOne, getCards, addNew, addCard, setAsPlayable };

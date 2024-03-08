@@ -1,9 +1,9 @@
-const express = require("express");
-const router = express.Router({ mergeParams: true });
+import { Router } from "express";
+import validate from "../middleware/validation.middleware.js";
+import { allCards, newCard } from "../controllers/card.controller.js";
 
-const validate = require("../middleware/validation.middleware");
-const { allCards, newCard } = require("../controllers/card.controller");
+const router = Router({ mergeParams: true });
 
 router.route("/").get(allCards).post(validate.cardBody, newCard);
 
-module.exports = router;
+export default router;
