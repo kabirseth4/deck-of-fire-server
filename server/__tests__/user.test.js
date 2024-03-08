@@ -5,19 +5,6 @@ const knex = require("../configs/knex.config");
 const deckModel = require("../models/deck.model");
 const cardModel = require("../models/card.model");
 
-beforeAll(async () => {
-  await knex.migrate.latest();
-});
-
-beforeEach(async () => {
-  await knex.seed.run();
-});
-
-afterAll(async () => {
-  await knex.migrate.rollback();
-  await knex.destroy();
-});
-
 describe("POST /users/register", () => {
   it("returns new user and 201", async () => {
     await request(app)
