@@ -1,76 +1,13 @@
 const request = require("supertest");
 const app = require("../app");
 const knex = require("../configs/knex.config");
-const jwt = require("jsonwebtoken");
 
-const userId = 1;
-const incorrectUserId = 999;
-const authHeader = {};
-const incorrectAuthHeader = {};
+const { userId, authHeader } = require("./helpers/test.setup");
 
-const userValidationTestCases = [
-  {
-    description: "returns 404 if user does not exist",
-    user: incorrectUserId,
-    header: incorrectAuthHeader,
-    status: 404,
-  },
-  {
-    description: "returns 401 if no auth header",
-    user: userId,
-    header: {},
-    status: 401,
-  },
-  {
-    description: "returns 403 if auth token is for different user",
-    user: userId,
-    header: incorrectAuthHeader,
-    status: 403,
-  },
-];
-
-const deckValidationTestCases = [
-  {
-    description: "returns 404 if deck does not exist",
-    deck: 999,
-    status: 404,
-  },
-  {
-    description: "returns 401 if deck belongs to different user",
-    deck: 9,
-    status: 401,
-  },
-];
-
-beforeAll(async () => {
-  await knex.migrate.latest();
-
-  const token = jwt.sign({ id: userId }, process.env.JWT_SECRET, {
-    expiresIn: "1h",
-  });
-  authHeader.Authorization = `Bearer ${token}`;
-
-  const incorrectToken = jwt.sign(
-    { id: incorrectUserId },
-    process.env.JWT_SECRET,
-    {
-      expiresIn: "1h",
-    }
-  );
-  incorrectAuthHeader.Authorization = `Bearer ${incorrectToken}`;
-});
-
-beforeEach(async () => {
-  await knex.seed.run();
-});
-
-afterAll(async () => {
-  await knex.migrate.rollback();
-  await knex.destroy();
-
-  delete authHeader.Authorization;
-  delete incorrectAuthHeader.Authorization;
-});
+const {
+  userValidationTestCases,
+  deckValidationTestCases,
+} = require("./helpers/test.cases");
 
 describe("GET /users/:userId/decks", () => {
   it("returns all decks for user", async () => {
