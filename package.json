@@ -9,6 +9,7 @@
     "db:rollback": "cd db && knex migrate:rollback",
     "db:seed": "cd db && knex seed:run"
   },
+  "type": "module",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
