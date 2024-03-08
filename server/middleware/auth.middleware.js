@@ -1,4 +1,4 @@
-const jwt = require("jsonwebtoken");
+import jwt from "jsonwebtoken";
 
 const user = async (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -34,4 +34,4 @@ const user = async (req, res, next) => {
   }
 };
 
-module.exports = { user };
+export default { user };

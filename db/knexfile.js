@@ -1,5 +1,11 @@
-const path = require("path");
-require("dotenv").config({ path: path.join(__dirname, "../.env") });
+import { config } from "dotenv";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+config({ path: join(__dirname, "../.env") });
 
 const {
   DB_HOST: host,
@@ -12,7 +18,7 @@ const {
 /**
  * @type { Object.<string, import("knex").Knex.Config> }
  */
-module.exports = {
+export default {
   development: {
     client: "mysql2",
     connection: {
@@ -23,10 +29,10 @@ module.exports = {
       charset: "utf8",
     },
     migrations: {
-      directory: path.join(__dirname, "/migrations"),
+      directory: join(__dirname, "/migrations"),
     },
     seeds: {
-      directory: path.join(__dirname, "/seeds"),
+      directory: join(__dirname, "/seeds"),
     },
   },
   test: {
@@ -39,10 +45,10 @@ module.exports = {
       charset: "utf8",
     },
     migrations: {
-      directory: path.join(__dirname, "/migrations"),
+      directory: join(__dirname, "/migrations"),
     },
     seeds: {
-      directory: path.join(__dirname, "/seeds"),
+      directory: join(__dirname, "/seeds"),
     },
   },
 };

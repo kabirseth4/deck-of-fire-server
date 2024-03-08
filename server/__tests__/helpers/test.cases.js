@@ -1,10 +1,6 @@
-const {
-  userId,
-  incorrectUserId,
-  incorrectAuthHeader,
-} = require("./test.setup");
+import { userId, incorrectUserId, incorrectAuthHeader } from "./test.setup.js";
 
-const userValidationTestCases = [
+export const userValidationTestCases = [
   {
     description: "returns 404 if user does not exist",
     user: incorrectUserId,
@@ -25,7 +21,7 @@ const userValidationTestCases = [
   },
 ];
 
-const deckValidationTestCases = [
+export const deckValidationTestCases = [
   {
     description: "returns 404 if deck does not exist",
     deck: 999,
@@ -37,8 +33,3 @@ const deckValidationTestCases = [
     status: 401,
   },
 ];
-
-module.exports = {
-  userValidationTestCases,
-  deckValidationTestCases,
-};

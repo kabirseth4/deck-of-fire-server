@@ -1,10 +1,10 @@
-const userData = require("../seed-data/user.data");
+import userData from "../seed-data/user.data.js";
 
 /**
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-exports.seed = async function (knex) {
+export async function seed(knex) {
   await knex("user").del();
   await knex("user").insert(userData);
-};
+}

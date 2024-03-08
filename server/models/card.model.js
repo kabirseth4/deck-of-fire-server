@@ -1,4 +1,4 @@
-const knex = require("../configs/knex.config");
+import knex from "../configs/knex.config.js";
 
 const getAll = async (userId) => {
   const cards = await knex("card")
@@ -22,4 +22,4 @@ const addNew = async (newCard) => {
   return createdCard;
 };
 
-module.exports = { getAll, getOne, addNew };
+export default { getAll, getOne, addNew };

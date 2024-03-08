@@ -1,4 +1,4 @@
-const knex = require("../configs/knex.config");
+import knex from "../configs/knex.config.js";
 
 const getAll = async () => {
   const users = await knex("user").select("id", "username", "email");
@@ -24,4 +24,4 @@ const register = async (newUser) => {
   return createdUser;
 };
 
-module.exports = { getAll, getOne, getOneByEmail, register };
+export default { getAll, getOne, getOneByEmail, register };

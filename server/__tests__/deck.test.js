@@ -1,13 +1,11 @@
-const request = require("supertest");
-const app = require("../app");
-const knex = require("../configs/knex.config");
-
-const { userId, authHeader } = require("./helpers/test.setup");
-
-const {
+import request from "supertest";
+import app from "../app.js";
+import knex from "../configs/knex.config.js";
+import { userId, authHeader } from "./helpers/test.setup.js";
+import {
   userValidationTestCases,
   deckValidationTestCases,
-} = require("./helpers/test.cases");
+} from "./helpers/test.cases.js";
 
 describe("GET /users/:userId/decks", () => {
   it("returns all decks for user", async () => {

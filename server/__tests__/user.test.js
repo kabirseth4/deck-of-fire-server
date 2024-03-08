@@ -1,9 +1,9 @@
-const request = require("supertest");
-const app = require("../app");
-const knex = require("../configs/knex.config");
+import request from "supertest";
+import app from "../app.js";
+import knex from "../configs/knex.config.js";
 
-const deckModel = require("../models/deck.model");
-const cardModel = require("../models/card.model");
+import deckModel from "../models/deck.model.js";
+import cardModel from "../models/card.model.js";
 
 describe("POST /users/register", () => {
   it("returns new user and 201", async () => {

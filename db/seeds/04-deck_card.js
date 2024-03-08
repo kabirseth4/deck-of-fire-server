@@ -1,10 +1,10 @@
-const deckCardData = require("../seed-data/deck_card.data");
+import deckCardData from "../seed-data/deck_card.data.js";
 
 /**
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-exports.seed = async function (knex) {
+export async function seed(knex) {
   await knex("deck_card").del();
   await knex("deck_card").insert(deckCardData);
-};
+}

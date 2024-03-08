@@ -1,10 +1,10 @@
-const knex = require("../../configs/knex.config");
-const jwt = require("jsonwebtoken");
+import knex from "../../configs/knex.config.js";
+import jwt from "jsonwebtoken";
 
-const userId = 1;
-const incorrectUserId = 999;
-const authHeader = {};
-const incorrectAuthHeader = {};
+export const userId = 1;
+export const incorrectUserId = 999;
+export const authHeader = {};
+export const incorrectAuthHeader = {};
 
 const createAuthHeaders = () => {
   const token = jwt.sign({ id: userId }, process.env.JWT_SECRET, {
@@ -41,10 +41,3 @@ afterAll(async () => {
   await knex.destroy();
   deleteAuthHeaders();
 });
-
-module.exports = {
-  userId,
-  incorrectUserId,
-  authHeader,
-  incorrectAuthHeader,
-};
