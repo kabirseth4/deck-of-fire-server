@@ -3,9 +3,10 @@
   "main": "index.js",
   "scripts": {
     "start": "node dist/index.js",
-    "postinstall": "tsc",
-    "dev": "ts-node-dev --respawn --pretty --transpile-only ./src/index.ts",
+    "dev": "nodemon --exec node --loader ts-node/esm src/index.ts",
+    "build": "tsc",
     "test": "NODE_OPTIONS=\"--experimental-vm-modules\" jest --verbose",
+    "postinstall": "tsc",
     "db:migrate": "cd src/db && knex migrate:latest",
     "db:rollback": "cd src/db && knex migrate:rollback",
     "db:seed": "cd src/db && knex seed:run"
@@ -30,6 +31,7 @@
     "@types/node": "^20.11.25",
     "@typescript-eslint/parser": "^7.1.1",
     "jest": "^29.7.0",
+    "nodemon": "^3.1.0",
     "supertest": "^6.3.4",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
