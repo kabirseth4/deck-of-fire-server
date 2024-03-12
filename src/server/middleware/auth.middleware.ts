@@ -1,6 +1,7 @@
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import { Request, Response, NextFunction } from "express";
 
-const user = async (req, res, next) => {
+export const user = async (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
   const userId = Number(req.params.userId);
 
@@ -13,7 +14,10 @@ const user = async (req, res, next) => {
   const authToken = authHeader.split(" ")[1];
 
   try {
-    const decodedToken = jwt.verify(authToken, process.env.JWT_SECRET);
+    const decodedToken = jwt.verify(
+      authToken,
+      process.env.JWT_SECRET as string
+    ) as JwtPayload;
 
     if (decodedToken.id !== userId) {
       return res.status(403).json({
@@ -22,7 +26,7 @@ const user = async (req, res, next) => {
     }
 
     next();
-  } catch (error) {
+  } catch (error: any) {
     if (error.name === "TokenExpiredError") {
       return res
         .status(401)

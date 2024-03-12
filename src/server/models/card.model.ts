@@ -1,14 +1,15 @@
 import knex from "../configs/knex.config.js";
-import { Card, NewCard } from "../types/card.d.js";
+import { Card, NewCard } from "../types/card.js";
+import { Id } from "../types/types.js";
 
-const getAll = async (userId: number) => {
+const getAll = async (userId: Id) => {
   const cards: Card[] = await knex("card")
     .where({ user_id: userId })
     .select("id", "name", "description");
   return cards;
 };
 
-const getOne = async (cardId: number) => {
+const getOne = async (cardId: Id) => {
   const card: Card = await knex("card")
     .select("id", "name", "description", "user_id")
     .where({ id: cardId })

@@ -1,9 +1,13 @@
+import { Request, Response, NextFunction } from "express";
 import userModel from "../models/user.model.js";
 import deckModel from "../models/deck.model.js";
 import cardModel from "../models/card.model.js";
 import { validateEmail } from "../utils/validation.utils.js";
+import { NewUser, UserLogin } from "../types/user.js";
+import { NewDeck, NewDeckCard } from "../types/deck.js";
+import { NewCard } from "../types/card.js";
 
-const user = async (req, res, next) => {
+const user = async (req: Request, res: Response, next: NextFunction) => {
   const { userId } = req.params;
 
   try {
@@ -17,26 +21,26 @@ const user = async (req, res, next) => {
 
     next();
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       message: `Unable to validate user with ID ${userId}.`,
       error,
     });
   }
 };
 
-const deck = async (req, res, next) => {
+const deck = async (req: Request, res: Response, next: NextFunction) => {
   const { userId, deckId } = req.params;
 
   try {
-    const deckData = await deckModel.getOne(deckId);
+    const deck = await deckModel.getOne(deckId);
 
-    if (!deckData) {
+    if (!deck) {
       return res
         .status(404)
         .json({ message: `Deck with ID ${deckId} not found.` });
     }
 
-    if (String(deckData.user_id) !== userId) {
+    if (String(deck.user_id) !== userId) {
       return res.status(401).json({
         message: `Invalid authorization for deck with ID ${deckId}.`,
       });
@@ -51,8 +55,12 @@ const deck = async (req, res, next) => {
   }
 };
 
-const registerUserBody = async (req, res, next) => {
-  const { username, email, password } = req.body;
+const registerUserBody = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { username, email, password } = req.body as NewUser;
 
   if (!username || !email || !password) {
     return res.status(400).json({
@@ -91,14 +99,18 @@ const registerUserBody = async (req, res, next) => {
     req.body = { username, email, password };
     next();
   } catch (error) {
-    res
+    return res
       .status(500)
       .json({ message: "Unable to validate request body.", error });
   }
 };
 
-const loginUserBody = async (req, res, next) => {
-  const { email, password } = req.body;
+const loginUserBody = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { email, password } = req.body as UserLogin;
 
   if (!email || !password) {
     return res.status(400).json({
@@ -116,8 +128,8 @@ const loginUserBody = async (req, res, next) => {
   next();
 };
 
-const deckBody = async (req, res, next) => {
-  const { name, is_scored, is_custom } = req.body;
+const deckBody = async (req: Request, res: Response, next: NextFunction) => {
+  const { name, is_scored, is_custom } = req.body as NewDeck;
 
   if (!name) {
     return res.status(400).json({
@@ -129,8 +141,8 @@ const deckBody = async (req, res, next) => {
   next();
 };
 
-const cardBody = async (req, res, next) => {
-  const { name, description } = req.body;
+const cardBody = async (req: Request, res: Response, next: NextFunction) => {
+  const { name, description } = req.body as NewCard;
 
   if (!name || !description) {
     return res.status(400).json({
@@ -142,9 +154,13 @@ const cardBody = async (req, res, next) => {
   next();
 };
 
-const deckCardBody = async (req, res, next) => {
+const deckCardBody = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { userId, deckId } = req.params;
-  const cards = req.body;
+  const cards = req.body as NewDeckCard[];
 
   try {
     const deckToUpdate = await deckModel.getOne(deckId);
@@ -169,7 +185,7 @@ const deckCardBody = async (req, res, next) => {
 
     for (let i = 0; i < cards.length; i++) {
       const { card_id, occurences, penalty } = cards[i];
-      let mappedCard = { card_id };
+      let mappedCard: NewDeckCard = { card_id };
 
       // Validate request body properties
       if (!card_id) {
@@ -178,7 +194,7 @@ const deckCardBody = async (req, res, next) => {
         });
       }
       if (deckToUpdate.is_custom) {
-        if (isNaN(occurences) || occurences < 1) {
+        if (occurences === undefined || isNaN(occurences) || occurences < 1) {
           return res.status(400).json({
             message:
               "Each card for a custom deck must include ccurences, which must be a positive number.",
@@ -187,7 +203,7 @@ const deckCardBody = async (req, res, next) => {
         mappedCard.occurences = occurences;
       }
       if (deckToUpdate.is_scored) {
-        if (isNaN(penalty) || penalty < 1) {
+        if (penalty === undefined || isNaN(penalty) || penalty < 1) {
           return res.status(400).json({
             message:
               "Each card for a scored deck must include a penalty, which must be a positive number.",
@@ -224,7 +240,7 @@ const deckCardBody = async (req, res, next) => {
     req.body = mappedCards;
     next();
   } catch (error) {
-    res
+    return res
       .status(500)
       .json({ message: "Unable to validate request body.", error });
   }

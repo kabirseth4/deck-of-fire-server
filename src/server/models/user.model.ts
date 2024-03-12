@@ -1,19 +1,18 @@
 import knex from "../configs/knex.config.js";
-import { NewUser, User, UserWithPassword } from "../types/user.d.js";
+import { Id } from "../types/types.js";
+import { NewUser, User, UserWithPassword } from "../types/user.js";
 
 const getAll = async () => {
   const users: User[] = await knex("user").select("id", "username", "email");
   return users;
 };
 
-const getOne = async (id: number): Promise<UserWithPassword | undefined> => {
+const getOne = async (id: Id) => {
   const user: UserWithPassword = await knex("user").where({ id }).first();
   return user;
 };
 
-const getOneByEmail = async (
-  email: string
-): Promise<UserWithPassword | undefined> => {
+const getOneByEmail = async (email: string) => {
   const user: UserWithPassword = await knex("user").where({ email }).first();
   return user;
 };

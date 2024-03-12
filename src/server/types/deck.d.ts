@@ -1,23 +1,30 @@
+import { Id, SQLBoolean } from "./types.js";
+import { Card } from "./card.js";
+
 export interface NewDeck {
-  user_id?: number;
+  user_id?: Id;
   name: string;
-  is_scored?: boolean | 1 | 0;
-  is_custom?: boolean | 1 | 0;
+  is_scored?: SQLBoolean;
+  is_custom?: SQLBoolean;
 }
 
 export interface Deck extends NewDeck {
-  id: number;
-  is_playable: boolean | 1 | 0;
+  id: Id;
+  is_playable: SQLBoolean;
   user_id?: number;
 }
 
+export interface DeckWithCards {
+  cards: Card[];
+}
+
 export interface NewDeckCard {
-  card_id: number;
-  deck_id?: number;
-  occurrences?: number;
+  card_id: Id;
+  deck_id?: Id;
+  occurences?: number;
   penalty?: number;
 }
 
 export interface DeckCard extends NewDeckCard {
-  id: number;
+  id: Id;
 }

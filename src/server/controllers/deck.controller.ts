@@ -1,31 +1,35 @@
+import { Request, Response } from "express";
 import deckModel from "../models/deck.model.js";
+import { DeckWithCards, NewDeck, NewDeckCard } from "../types/deck.js";
 
-export const allDecks = async (req, res) => {
+export const allDecks = async (req: Request, res: Response) => {
   const { userId } = req.params;
 
   try {
     const decks = await deckModel.getAll(userId);
-    res.json(decks);
+    return res.json(decks);
   } catch (error) {
-    res.status(500).json({ message: "Unable to retrieve deck data", error });
+    return res
+      .status(500)
+      .json({ message: "Unable to retrieve deck data", error });
   }
 };
 
-export const singleDeck = async (req, res) => {
+export const singleDeck = async (req: Request, res: Response) => {
   const { deckId } = req.params;
 
   try {
-    const deckInfo = await deckModel.getOne(deckId);
-    delete deckInfo.user_id;
+    const deck = await deckModel.getOne(deckId);
+    delete deck.user_id;
 
     const cardColumns = ["card.id", "name", "description"];
-    if (deckInfo.is_custom) cardColumns.push("occurences");
-    if (deckInfo.is_scored) cardColumns.push("penalty");
+    if (deck.is_custom) cardColumns.push("occurences");
+    if (deck.is_scored) cardColumns.push("penalty");
 
     const cards = await deckModel.getCards(deckId, cardColumns);
 
-    const deck = { ...deckInfo, cards };
-    res.json(deck);
+    const deckWithCards: DeckWithCards = { ...deck, cards };
+    return res.json(deckWithCards);
   } catch (error) {
     res
       .status(500)
@@ -33,21 +37,23 @@ export const singleDeck = async (req, res) => {
   }
 };
 
-export const newDeck = async (req, res) => {
+export const newDeck = async (req: Request, res: Response) => {
   const { userId } = req.params;
-  const newDeck = { ...req.body, user_id: userId };
+  const newDeck: NewDeck = { ...req.body, user_id: userId };
 
   try {
     const createdDeck = await deckModel.addNew(newDeck);
-    res.status(201).json(createdDeck);
+    return res.status(201).json(createdDeck);
   } catch (error) {
-    res.status(500).json({ message: "Unable to create new deck.", error });
+    return res
+      .status(500)
+      .json({ message: "Unable to create new deck.", error });
   }
 };
 
-export const cardsToDeck = async (req, res) => {
+export const cardsToDeck = async (req: Request, res: Response) => {
   const { deckId } = req.params;
-  const cards = req.body;
+  const cards: NewDeckCard[] = req.body;
 
   try {
     const deckToUpdate = await deckModel.getOne(deckId);
@@ -75,8 +81,10 @@ export const cardsToDeck = async (req, res) => {
       await deckModel.setAsPlayable(deckId);
     }
 
-    res.status(201).json(createdDeckCards);
+    return res.status(201).json(createdDeckCards);
   } catch (error) {
-    res.status(500).json({ message: "Unable to add cards to deck.", error });
+    return res
+      .status(500)
+      .json({ message: "Unable to add cards to deck.", error });
   }
 };

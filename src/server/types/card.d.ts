@@ -1,11 +1,13 @@
+import { Id } from "./types";
+
 export interface NewCard {
   name: string;
   description: string;
-  occurrences?: number;
+  occurences?: number;
   penalty?: number;
-  user_id?: number;
+  user_id?: Id;
 }
 
 export interface Card extends NewCard {
-  id: number;
+  id: Id;
 }

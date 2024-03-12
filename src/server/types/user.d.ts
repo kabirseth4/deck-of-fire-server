@@ -1,3 +1,5 @@
+import { Id } from "./types.js";
+
 export interface NewUser {
   username: string;
   email: string;
@@ -5,7 +7,7 @@ export interface NewUser {
 }
 
 export interface User extends NewUser {
-  id: number;
+  id: Id;
   password: undefined;
 }
 

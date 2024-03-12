@@ -1,15 +1,16 @@
 import knex from "../configs/knex.config.js";
-import { NewDeck, Deck, DeckCard, NewDeckCard } from "../types/deck.d.js";
-import { Card } from "../types/card.d.js";
+import { NewDeck, Deck, DeckCard, NewDeckCard } from "../types/deck.js";
+import { Card } from "../types/card.js";
+import { Id } from "../types/types.js";
 
-const getAll = async (userId: number) => {
+const getAll = async (userId: Id) => {
   const decks: Deck[] = await knex("deck")
     .where({ user_id: userId })
     .select("id", "name", "is_scored", "is_custom", "is_playable");
   return decks;
 };
 
-const getOne = async (deckId: number) => {
+const getOne = async (deckId: Id) => {
   const deck: Deck = await knex("deck")
     .select("id", "name", "is_scored", "is_custom", "is_playable", "user_id")
     .where({ id: deckId })
@@ -17,7 +18,7 @@ const getOne = async (deckId: number) => {
   return deck;
 };
 
-const getCards = async (deckId: number, columns: string[] | string = "*") => {
+const getCards = async (deckId: Id, columns: string[] | string = "*") => {
   const cards: Card[] = await knex("card")
     .join("deck_card", "deck_card.card_id", "card.id")
     .where({ deck_id: deckId })
@@ -27,13 +28,13 @@ const getCards = async (deckId: number, columns: string[] | string = "*") => {
 
 const addNew = async (newDeck: NewDeck) => {
   const [newDeckId]: number[] = await knex("deck").insert(newDeck);
-  const createdDeck: Deck = await getOne(newDeckId);
+  const createdDeck = await getOne(newDeckId);
   delete createdDeck.user_id;
   return createdDeck;
 };
 
 const addCard = async (
-  deckId: number,
+  deckId: Id,
   deckCard: NewDeckCard,
   cardColumns: string[] | string = "*"
 ) => {
@@ -47,7 +48,7 @@ const addCard = async (
   return createdDeckCard;
 };
 
-const setAsPlayable = async (deckId: number) => {
+const setAsPlayable = async (deckId: Id) => {
   await knex("deck").update({ is_playable: true }).where({ id: deckId });
 };
 

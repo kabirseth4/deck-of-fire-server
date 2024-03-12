@@ -30,17 +30,6 @@ export const registerUser = async (req: Request, res: Response) => {
     };
     const addedDeck = await deckModel.addNew(defaultUserDeck);
 
-    // // Chunk cards into smaller groups
-    // const chunkSize = 3;
-    // const cardChunks : Card[][] = [];
-    // for (let i = 0; i < defaultCards.length; i += chunkSize) {
-    //   cardChunks.push(defaultCards.slice(i, i + chunkSize));
-    // }
-
-    // Create and add cards to deck
-    // for (const chunk of cardChunks) {
-    //   await Promise.all(
-    //     chunk.map(async (card) => {
     for (const card of defaultCards) {
       const cardToCreate: NewCard = { ...card, user_id: createdUser.id };
       const createdCard = await cardModel.addNew(cardToCreate);
@@ -50,15 +39,14 @@ export const registerUser = async (req: Request, res: Response) => {
       };
       await deckModel.addCard(addedDeck.id, cardToAdd);
     }
-    //     })
-    //   );
-    // }
 
     await deckModel.setAsPlayable(addedDeck.id);
 
     return res.status(201).json(createdUser);
   } catch (error) {
-    res.status(500).json({ message: "Unable to register new user.", error });
+    return res
+      .status(500)
+      .json({ message: "Unable to register new user.", error });
   }
 };
 
@@ -84,8 +72,8 @@ export const loginUser = async (req: Request, res: Response) => {
       { expiresIn: "28d" }
     );
 
-    res.json({ id: user.id, token });
+    return res.json({ id: user.id, token });
   } catch (error) {
-    res.status(500).json({ message: "Unable to log in user.", error });
+    return res.status(500).json({ message: "Unable to log in user.", error });
   }
 };
