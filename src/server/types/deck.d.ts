@@ -1,15 +1,13 @@
 export interface NewDeck {
+  user_id?: number;
   name: string;
-  is_scored?: boolean;
-  is_custom?: boolean;
+  is_scored?: boolean | 1 | 0;
+  is_custom?: boolean | 1 | 0;
 }
 
-export interface Deck {
+export interface Deck extends NewDeck {
   id: number;
-  name: string;
-  is_scored: number;
-  is_custom: number;
-  is_playable: number;
+  is_playable: boolean | 1 | 0;
   user_id?: number;
 }
 

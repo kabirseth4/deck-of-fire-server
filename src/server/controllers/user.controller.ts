@@ -1,16 +1,20 @@
 import { hashSync, compareSync } from "bcrypt";
 import jwt from "jsonwebtoken";
+import { Request, Response } from "express";
 import userModel from "../models/user.model.js";
 import deckModel from "../models/deck.model.js";
 import cardModel from "../models/card.model.js";
 import defaultCards from "../data/default-cards.data.js";
 import defaultDeck from "../data/default-deck.data.js";
+import { NewUser, UserLogin } from "../types/user.js";
+import { NewDeck, NewDeckCard } from "../types/deck.js";
+import { NewCard } from "../types/card.js";
 
-export const registerUser = async (req, res) => {
-  const { username, email, password } = req.body;
+export const registerUser = async (req: Request, res: Response) => {
+  const { username, email, password } = req.body as NewUser;
 
   const hashedPassword = hashSync(password, 6);
-  const newUser = {
+  const newUser: NewUser = {
     username,
     email,
     password: hashedPassword,
@@ -20,27 +24,35 @@ export const registerUser = async (req, res) => {
     const createdUser = await userModel.register(newUser);
 
     // Add default deck
-    const defaultUserDeck = { ...defaultDeck, user_id: createdUser.id };
+    const defaultUserDeck: NewDeck = {
+      ...defaultDeck,
+      user_id: createdUser.id,
+    };
     const addedDeck = await deckModel.addNew(defaultUserDeck);
 
-    // Chunk cards into smaller groups
-    const chunkSize = 3;
-    const cardChunks = [];
-    for (let i = 0; i < defaultCards.length; i += chunkSize) {
-      cardChunks.push(defaultCards.slice(i, i + chunkSize));
-    }
+    // // Chunk cards into smaller groups
+    // const chunkSize = 3;
+    // const cardChunks : Card[][] = [];
+    // for (let i = 0; i < defaultCards.length; i += chunkSize) {
+    //   cardChunks.push(defaultCards.slice(i, i + chunkSize));
+    // }
 
     // Create and add cards to deck
-    for (const chunk of cardChunks) {
-      await Promise.all(
-        chunk.map(async (card) => {
-          const cardToCreate = { ...card, user_id: createdUser.id };
-          const createdCard = await cardModel.addNew(cardToCreate);
-          const cardToAdd = { card_id: createdCard.id, deck_id: addedDeck.id };
-          await deckModel.addCard(addedDeck.id, cardToAdd);
-        })
-      );
+    // for (const chunk of cardChunks) {
+    //   await Promise.all(
+    //     chunk.map(async (card) => {
+    for (const card of defaultCards) {
+      const cardToCreate: NewCard = { ...card, user_id: createdUser.id };
+      const createdCard = await cardModel.addNew(cardToCreate);
+      const cardToAdd: NewDeckCard = {
+        card_id: createdCard.id,
+        deck_id: addedDeck.id,
+      };
+      await deckModel.addCard(addedDeck.id, cardToAdd);
     }
+    //     })
+    //   );
+    // }
 
     await deckModel.setAsPlayable(addedDeck.id);
 
@@ -50,8 +62,8 @@ export const registerUser = async (req, res) => {
   }
 };
 
-export const loginUser = async (req, res) => {
-  const { email, password } = req.body;
+export const loginUser = async (req: Request, res: Response) => {
+  const { email, password } = req.body as UserLogin;
 
   try {
     const user = await userModel.getOneByEmail(email);
@@ -68,7 +80,7 @@ export const loginUser = async (req, res) => {
 
     const token = jwt.sign(
       { id: user.id, email: user.email },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET as string,
       { expiresIn: "28d" }
     );
 

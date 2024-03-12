@@ -40,7 +40,7 @@ const addCard = async (
   deckCard.deck_id = deckId;
   const newDeckCardId: number[] = await knex("deck_card").insert(deckCard);
 
-  const createdDeckCard = await knex("deck_card")
+  const createdDeckCard: DeckCard = await knex("deck_card")
     .whereIn("id", newDeckCardId)
     .first()
     .select(cardColumns);

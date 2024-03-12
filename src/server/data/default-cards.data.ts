@@ -1,3 +1,5 @@
+import { NewCard } from "../types/card.js";
+
 export default [
   {
     name: "You",
@@ -58,4 +60,4 @@ export default [
     description:
       "Everyone starts drinking one after the other and can stop when the person to their right stops",
   },
-];
+] as NewCard[];
