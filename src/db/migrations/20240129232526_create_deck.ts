@@ -1,8 +1,6 @@
-/**
- * @param { import("knex").Knex } knex
- * @returns { Promise<void> }
- */
-export function up(knex) {
+import { Knex } from "knex";
+
+export function up(knex: Knex): Promise<void> {
   return knex.schema.createTable("deck", (table) => {
     table.increments("id").primary();
     table.string("name", 25).notNullable();
@@ -22,10 +20,6 @@ export function up(knex) {
   });
 }
 
-/**
- * @param { import("knex").Knex } knex
- * @returns { Promise<void> }
- */
-export function down(knex) {
+export function down(knex: Knex): Promise<void> {
   return knex.schema.dropTable("deck");
 }

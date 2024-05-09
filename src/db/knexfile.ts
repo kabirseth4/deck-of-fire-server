@@ -1,11 +1,12 @@
-import { config } from "dotenv";
+import type { Knex } from "knex";
+import dotenv from "dotenv";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-config({ path: join(__dirname, "../../.env") });
+dotenv.config({ path: join(__dirname, "../../.env") });
 
 const {
   DB_HOST: host,
@@ -15,10 +16,7 @@ const {
   TEST_DB_NAME: testDatabase,
 } = process.env;
 
-/**
- * @type { Object.<string, import("knex").Knex.Config> }
- */
-export default {
+const config: { [key: string]: Knex.Config } = {
   development: {
     client: "mysql2",
     connection: {
@@ -52,3 +50,5 @@ export default {
     },
   },
 };
+
+export default config;

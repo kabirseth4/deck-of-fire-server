@@ -1,10 +1,7 @@
+import { Knex } from "knex";
 import deckData from "../seed-data/deck.data.js";
 
-/**
- * @param { import("knex").Knex } knex
- * @returns { Promise<void> }
- */
-export async function seed(knex) {
+export async function seed(knex: Knex): Promise<void> {
   await knex("deck").del();
   await knex("deck").insert(deckData);
 }
