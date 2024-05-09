@@ -1,11 +1,8 @@
 import { hashSync, compareSync } from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
-import userModel from "../models/user.model.js";
-import deckModel from "../models/deck.model.js";
-import cardModel from "../models/card.model.js";
-import defaultCards from "../data/default-cards.data.js";
-import defaultDeck from "../data/default-deck.data.js";
+import { userModel, deckModel, cardModel } from "../models/index.js";
+import { defaultDeck, defaultCards } from "../data/index.js";
 import { NewUser, UserLogin } from "../types/user.js";
 import { NewDeck, NewDeckCard } from "../types/deck.js";
 import { NewCard } from "../types/card.js";

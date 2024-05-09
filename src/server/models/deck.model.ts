@@ -52,4 +52,11 @@ const setAsPlayable = async (deckId: Id) => {
   await knex("deck").update({ is_playable: true }).where({ id: deckId });
 };
 
-export default { getAll, getOne, getCards, addNew, addCard, setAsPlayable };
+export const deckModel = {
+  getAll,
+  getOne,
+  getCards,
+  addNew,
+  addCard,
+  setAsPlayable,
+};

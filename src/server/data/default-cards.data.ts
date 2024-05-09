@@ -1,6 +1,6 @@
 import { NewCard } from "../types/card.js";
 
-export default [
+export const defaultCards = [
   {
     name: "You",
     description: "Pick a person to take a penalty",

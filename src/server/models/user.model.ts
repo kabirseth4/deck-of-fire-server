@@ -26,4 +26,4 @@ const register = async (newUser: NewUser) => {
   return createdUser;
 };
 
-export default { getAll, getOne, getOneByEmail, register };
+export const userModel = { getAll, getOne, getOneByEmail, register };

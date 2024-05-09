@@ -1,7 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import userModel from "../models/user.model.js";
-import deckModel from "../models/deck.model.js";
-import cardModel from "../models/card.model.js";
+import { userModel, deckModel, cardModel } from "../models/index.js";
 import { validateEmail } from "../utils/validation.utils.js";
 import { NewUser, UserLogin } from "../types/user.js";
 import { NewDeck, NewDeckCard } from "../types/deck.js";

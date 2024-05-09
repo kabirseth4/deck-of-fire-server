@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import cardModel from "../models/card.model.js";
+import { cardModel } from "../models/index.js";
 import { NewCard } from "../types/card.js";
 
 export const allCards = async (req: Request, res: Response) => {

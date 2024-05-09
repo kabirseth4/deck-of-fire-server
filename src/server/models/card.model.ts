@@ -24,4 +24,4 @@ const addNew = async (newCard: NewCard) => {
   return createdCard;
 };
 
-export default { getAll, getOne, addNew };
+export const cardModel = { getAll, getOne, addNew };

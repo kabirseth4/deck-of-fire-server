@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import deckModel from "../models/deck.model.js";
+import { deckModel } from "../models/index.js";
 import { DeckWithCards, NewDeck, NewDeckCard } from "../types/deck.js";
 
 export const allDecks = async (req: Request, res: Response) => {
