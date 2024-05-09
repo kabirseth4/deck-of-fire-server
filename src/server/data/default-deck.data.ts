@@ -1,4 +1,4 @@
-import { NewDeck } from "../types/deck";
+import { NewDeck } from "../types/deck.js";
 
 export default {
   name: "The Deck of Fire",

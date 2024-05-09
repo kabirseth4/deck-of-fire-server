@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import deckModel from "../models/deck.model";
-import { DeckWithCards, NewDeck, NewDeckCard } from "../types/deck";
+import deckModel from "../models/deck.model.js";
+import { DeckWithCards, NewDeck, NewDeckCard } from "../types/deck.js";
 
 export const allDecks = async (req: Request, res: Response) => {
   const { userId } = req.params;

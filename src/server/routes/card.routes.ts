@@ -1,6 +1,6 @@
 import { Router } from "express";
-import validate from "../middleware/validation.middleware";
-import { allCards, newCard } from "../controllers/card.controller";
+import validate from "../middleware/validation.middleware.js";
+import { allCards, newCard } from "../controllers/card.controller.js";
 
 const router = Router({ mergeParams: true });
 

@@ -1,4 +1,4 @@
-import knex from "../../configs/knex.config";
+import knex from "../../configs/knex.config.js";
 import jwt from "jsonwebtoken";
 import type { IncomingHttpHeaders } from "http";
 

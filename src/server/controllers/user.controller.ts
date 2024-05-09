@@ -1,14 +1,14 @@
 import { hashSync, compareSync } from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
-import userModel from "../models/user.model";
-import deckModel from "../models/deck.model";
-import cardModel from "../models/card.model";
-import defaultCards from "../data/default-cards.data";
-import defaultDeck from "../data/default-deck.data";
-import { NewUser, UserLogin } from "../types/user";
-import { NewDeck, NewDeckCard } from "../types/deck";
-import { NewCard } from "../types/card";
+import userModel from "../models/user.model.js";
+import deckModel from "../models/deck.model.js";
+import cardModel from "../models/card.model.js";
+import defaultCards from "../data/default-cards.data.js";
+import defaultDeck from "../data/default-deck.data.js";
+import { NewUser, UserLogin } from "../types/user.js";
+import { NewDeck, NewDeckCard } from "../types/deck.js";
+import { NewCard } from "../types/card.js";
 
 export const registerUser = async (req: Request, res: Response) => {
   const { username, email, password } = req.body as NewUser;

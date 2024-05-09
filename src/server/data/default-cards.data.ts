@@ -1,4 +1,4 @@
-import { NewCard } from "../types/card";
+import { NewCard } from "../types/card.js";
 
 export default [
   {

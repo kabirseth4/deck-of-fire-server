@@ -1,4 +1,4 @@
-import { Id } from "./types";
+import { Id } from "./types.js";
 
 export interface NewCard {
   name: string;

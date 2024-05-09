@@ -1,13 +1,13 @@
 import request from "supertest";
-import app from "../app";
-import knex from "../configs/knex.config";
-import { userId, authHeader } from "./helpers/test.setup";
+import app from "../app.js";
+import knex from "../configs/knex.config.js";
+import { userId, authHeader } from "./helpers/test.setup.js";
 import {
   userValidationTestCases,
   deckValidationTestCases,
-} from "./helpers/test.cases";
-import { Deck } from "../types/deck";
-import { Card } from "../types/card";
+} from "./helpers/test.cases.js";
+import { Deck } from "../types/deck.js";
+import { Card } from "../types/card.js";
 
 describe("GET /users/:userId/decks", () => {
   it("returns all decks for user", async () => {
