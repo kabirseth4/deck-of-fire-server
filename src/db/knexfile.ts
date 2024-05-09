@@ -16,54 +16,36 @@ const {
   TEST_DB_NAME: testDatabase,
 } = process.env;
 
+const defaults = {
+  client: "mysql2",
+  connection: {
+    host,
+    database,
+    user,
+    password,
+    charset: "utf8",
+  },
+  migrations: {
+    directory: join(__dirname, "/migrations"),
+  },
+  seeds: {
+    directory: join(__dirname, "/seeds"),
+  },
+};
+
 const config: { [key: string]: Knex.Config } = {
   development: {
-    client: "mysql2",
-    connection: {
-      host,
-      database,
-      user,
-      password,
-      charset: "utf8",
-    },
-    migrations: {
-      directory: join(__dirname, "/migrations"),
-    },
-    seeds: {
-      directory: join(__dirname, "/seeds"),
-    },
+    ...defaults,
   },
   test: {
-    client: "mysql2",
+    ...defaults,
     connection: {
-      host,
+      ...defaults.connection,
       database: testDatabase,
-      user,
-      password,
-      charset: "utf8",
-    },
-    migrations: {
-      directory: join(__dirname, "/migrations"),
-    },
-    seeds: {
-      directory: join(__dirname, "/seeds"),
     },
   },
   production: {
-    client: "mysql2",
-    connection: {
-      host,
-      database,
-      user,
-      password,
-      charset: "utf8",
-    },
-    migrations: {
-      directory: join(__dirname, "/migrations"),
-    },
-    seeds: {
-      directory: join(__dirname, "/seeds"),
-    },
+    ...defaults,
   },
 };
 
