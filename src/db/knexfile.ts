@@ -49,6 +49,22 @@ const config: { [key: string]: Knex.Config } = {
       directory: join(__dirname, "/seeds"),
     },
   },
+  production: {
+    client: "mysql2",
+    connection: {
+      host,
+      database,
+      user,
+      password,
+      charset: "utf8",
+    },
+    migrations: {
+      directory: join(__dirname, "/migrations"),
+    },
+    seeds: {
+      directory: join(__dirname, "/seeds"),
+    },
+  },
 };
 
 export default config;
