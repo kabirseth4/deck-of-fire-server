@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import cardModel from "../models/card.model.js";
-import { NewCard } from "../types/card.js";
+import cardModel from "../models/card.model";
+import { NewCard } from "../types/card";
 
 export const allCards = async (req: Request, res: Response) => {
   const { userId } = req.params;

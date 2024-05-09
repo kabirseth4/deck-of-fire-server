@@ -1,8 +1,8 @@
 import request from "supertest";
-import app from "../app.js";
-import knex from "../configs/knex.config.js";
-import { userId, authHeader } from "./helpers/test.setup.js";
-import { userValidationTestCases } from "./helpers/test.cases.js";
+import app from "../app";
+import knex from "../configs/knex.config";
+import { userId, authHeader } from "./helpers/test.setup";
+import { userValidationTestCases } from "./helpers/test.cases";
 
 describe("GET /users/:userId/cards", () => {
   it("returns all cards for user", async () => {

@@ -1,9 +1,9 @@
 import request from "supertest";
-import app from "../app.js";
-import knex from "../configs/knex.config.js";
+import app from "../app";
+import knex from "../configs/knex.config";
 
-import deckModel from "../models/deck.model.js";
-import cardModel from "../models/card.model.js";
+import deckModel from "../models/deck.model";
+import cardModel from "../models/card.model";
 
 describe("POST /users/register", () => {
   it("returns new user and 201", async () => {

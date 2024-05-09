@@ -1,6 +1,6 @@
-import knex from "../configs/knex.config.js";
-import { Card, NewCard } from "../types/card.js";
-import { Id } from "../types/types.js";
+import knex from "../configs/knex.config";
+import type { Card, NewCard } from "../types/card";
+import { Id } from "../types/types";
 
 const getAll = async (userId: Id) => {
   const cards: Card[] = await knex("card")

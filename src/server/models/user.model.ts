@@ -1,6 +1,6 @@
-import knex from "../configs/knex.config.js";
-import { Id } from "../types/types.js";
-import { NewUser, User, UserWithPassword } from "../types/user.js";
+import knex from "../configs/knex.config";
+import { Id } from "../types/types";
+import { NewUser, User, UserWithPassword } from "../types/user";
 
 const getAll = async () => {
   const users: User[] = await knex("user").select("id", "username", "email");

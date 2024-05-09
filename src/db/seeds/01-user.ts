@@ -1,5 +1,5 @@
 import { Knex } from "knex";
-import userData from "../seed-data/user.data.js";
+import userData from "../seed-data/user.data";
 
 export async function seed(knex: Knex): Promise<void> {
   await knex("user").del();

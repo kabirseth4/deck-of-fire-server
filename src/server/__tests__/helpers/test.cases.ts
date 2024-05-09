@@ -1,4 +1,4 @@
-import { userId, incorrectUserId, incorrectAuthHeader } from "./test.setup.js";
+import { userId, incorrectUserId, incorrectAuthHeader } from "./test.setup";
 
 export const userValidationTestCases = [
   {

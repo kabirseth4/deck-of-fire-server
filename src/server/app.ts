@@ -1,8 +1,8 @@
-import express, { json } from "express";
+import express, { json, Application } from "express";
 import cors from "cors";
-import userRoutes from "./routes/user.routes.js";
+import userRoutes from "./routes/user.routes";
 
-const app = express();
+const app: Application = express();
 
 app.use(json());
 app.use(cors());

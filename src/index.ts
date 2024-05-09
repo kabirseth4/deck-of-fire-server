@@ -1,5 +1,5 @@
 import { config } from "dotenv";
-import app from "./server/app.js";
+import app from "./server/app";
 
 config({ path: "../.env" });
 

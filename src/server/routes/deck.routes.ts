@@ -1,11 +1,11 @@
 import { Router } from "express";
-import validate from "../middleware/validation.middleware.js";
+import validate from "../middleware/validation.middleware";
 import {
   allDecks,
   singleDeck,
   newDeck,
   cardsToDeck,
-} from "../controllers/deck.controller.js";
+} from "../controllers/deck.controller";
 
 const router = Router({ mergeParams: true });
 

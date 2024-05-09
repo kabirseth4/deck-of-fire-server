@@ -1,11 +1,13 @@
 import request from "supertest";
-import app from "../app.js";
-import knex from "../configs/knex.config.js";
-import { userId, authHeader } from "./helpers/test.setup.js";
+import app from "../app";
+import knex from "../configs/knex.config";
+import { userId, authHeader } from "./helpers/test.setup";
 import {
   userValidationTestCases,
   deckValidationTestCases,
-} from "./helpers/test.cases.js";
+} from "./helpers/test.cases";
+import { Deck } from "../types/deck";
+import { Card } from "../types/card";
 
 describe("GET /users/:userId/decks", () => {
   it("returns all decks for user", async () => {
@@ -17,7 +19,7 @@ describe("GET /users/:userId/decks", () => {
       .expect(({ body }) => {
         expect(body).toEqual(expect.any(Array));
         expect(body).toHaveLength(8);
-        body.forEach((deck) => {
+        body.forEach((deck: Deck) => {
           expect(deck).toEqual(
             expect.objectContaining({
               id: expect.any(Number),
@@ -154,7 +156,7 @@ describe("GET /users/:userId/decks/:deckId", () => {
       .expect("Content-Type", /json/)
       .expect(200)
       .expect(({ body: { cards } }) => {
-        cards.forEach((card) => {
+        cards.forEach((card: Card) => {
           expect(card).toEqual(
             expect.objectContaining({
               id: expect.any(Number),
@@ -179,7 +181,7 @@ describe("GET /users/:userId/decks/:deckId", () => {
       .expect("Content-Type", /json/)
       .expect(200)
       .expect(({ body: { cards } }) => {
-        cards.forEach((card) => {
+        cards.forEach((card: Card) => {
           expect(card).toEqual(
             expect.objectContaining({
               id: expect.any(Number),
@@ -201,7 +203,7 @@ describe("GET /users/:userId/decks/:deckId", () => {
       .expect(200)
       .expect(({ body: { cards } }) => {
         expect(cards).toHaveLength(13);
-        cards.forEach((card) => {
+        cards.forEach((card: Card) => {
           expect(card).toEqual(
             expect.objectContaining({
               id: expect.any(Number),
@@ -227,7 +229,7 @@ describe("GET /users/:userId/decks/:deckId", () => {
       .expect(200)
       .expect(({ body: { cards } }) => {
         expect(cards).toHaveLength(13);
-        cards.forEach((card) => {
+        cards.forEach((card: Card) => {
           expect(card).toEqual(
             expect.objectContaining({
               id: expect.any(Number),

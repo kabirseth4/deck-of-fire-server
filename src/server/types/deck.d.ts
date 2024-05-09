@@ -1,5 +1,5 @@
-import { Id, SQLBoolean } from "./types.js";
-import { Card } from "./card.js";
+import { Id, SQLBoolean } from "./types";
+import { Card } from "./card";
 
 export interface NewDeck {
   user_id?: Id;

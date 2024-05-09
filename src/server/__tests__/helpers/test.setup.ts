@@ -1,20 +1,21 @@
-import knex from "../../configs/knex.config.js";
+import knex from "../../configs/knex.config";
 import jwt from "jsonwebtoken";
+import type { IncomingHttpHeaders } from "http";
 
 export const userId = 1;
 export const incorrectUserId = 999;
-export const authHeader = {};
-export const incorrectAuthHeader = {};
+export const authHeader: IncomingHttpHeaders = {};
+export const incorrectAuthHeader: IncomingHttpHeaders = {};
 
 const createAuthHeaders = () => {
-  const token = jwt.sign({ id: userId }, process.env.JWT_SECRET, {
+  const token = jwt.sign({ id: userId }, process.env.JWT_SECRET as string, {
     expiresIn: "1h",
   });
   authHeader.Authorization = `Bearer ${token}`;
 
   const incorrectToken = jwt.sign(
     { id: incorrectUserId },
-    process.env.JWT_SECRET,
+    process.env.JWT_SECRET as string,
     {
       expiresIn: "1h",
     }

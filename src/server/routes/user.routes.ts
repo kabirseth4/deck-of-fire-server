@@ -1,9 +1,9 @@
 import { Router } from "express";
-import validate from "../middleware/validation.middleware.js";
-import authorize from "../middleware/auth.middleware.js";
-import deckRoutes from "./deck.routes.js";
-import cardRoutes from "./card.routes.js";
-import { registerUser, loginUser } from "../controllers/user.controller.js";
+import validate from "../middleware/validation.middleware";
+import authorize from "../middleware/auth.middleware";
+import deckRoutes from "./deck.routes";
+import cardRoutes from "./card.routes";
+import { registerUser, loginUser } from "../controllers/user.controller";
 
 const router = Router({ mergeParams: true });
 

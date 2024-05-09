@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from "express";
-import userModel from "../models/user.model.js";
-import deckModel from "../models/deck.model.js";
-import cardModel from "../models/card.model.js";
-import { validateEmail } from "../utils/validation.utils.js";
-import { NewUser, UserLogin } from "../types/user.js";
-import { NewDeck, NewDeckCard } from "../types/deck.js";
-import { NewCard } from "../types/card.js";
+import userModel from "../models/user.model";
+import deckModel from "../models/deck.model";
+import cardModel from "../models/card.model";
+import { validateEmail } from "../utils/validation.utils";
+import { NewUser, UserLogin } from "../types/user";
+import { NewDeck, NewDeckCard } from "../types/deck";
+import { NewCard } from "../types/card";
 
 const user = async (req: Request, res: Response, next: NextFunction) => {
   const { userId } = req.params;
