@@ -24,9 +24,9 @@ describe("GET /users/:userId/decks", () => {
             expect.objectContaining({
               id: expect.any(Number),
               name: expect.any(String),
-              is_custom: expect.any(Number),
-              is_scored: expect.any(Number),
-              is_playable: expect.any(Number),
+              is_custom: expect.any(Boolean),
+              is_scored: expect.any(Boolean),
+              is_playable: expect.any(Boolean),
             })
           );
         });
@@ -86,9 +86,9 @@ describe("POST /users/:userId/decks", () => {
           expect.objectContaining({
             id: expect.any(Number),
             name: "New deck",
-            is_custom: 0,
-            is_scored: 0,
-            is_playable: 0,
+            is_custom: false,
+            is_scored: false,
+            is_playable: false,
           })
         );
       });
@@ -140,9 +140,9 @@ describe("GET /users/:userId/decks/:deckId", () => {
           expect.objectContaining({
             id: deckId,
             name: expect.any(String),
-            is_custom: expect.any(Number),
-            is_scored: expect.any(Number),
-            is_playable: expect.any(Number),
+            is_custom: expect.any(Boolean),
+            is_scored: expect.any(Boolean),
+            is_playable: expect.any(Boolean),
             cards: expect.any(Array),
           })
         );

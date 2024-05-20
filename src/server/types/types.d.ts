@@ -1,2 +1,2 @@
 export type Id = string | number;
-export type SQLBoolean = boolean | 1 | 0;
+export type SQLBoolean = 1 | 0;

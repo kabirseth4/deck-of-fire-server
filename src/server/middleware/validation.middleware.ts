@@ -162,6 +162,8 @@ const deckCardBody = async (
 
   try {
     const deckToUpdate = await deckModel.getOne(deckId);
+    if (!deckToUpdate)
+      throw new Error("Unable to retrieve deck from database.");
     const deckToUpdateCards = await deckModel.getCards(deckId, "card.id");
 
     if (

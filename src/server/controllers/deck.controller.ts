@@ -20,6 +20,7 @@ export const singleDeck = async (req: Request, res: Response) => {
 
   try {
     const deck = await deckModel.getOne(deckId);
+    if (!deck) throw new Error("Unable to retrieve deck from database");
     delete deck.user_id;
 
     const cardColumns = ["card.id", "name", "description"];
@@ -57,6 +58,7 @@ export const cardsToDeck = async (req: Request, res: Response) => {
 
   try {
     const deckToUpdate = await deckModel.getOne(deckId);
+    if (!deckToUpdate) throw new Error("Unable to retrieve deck from database");
 
     const cardColumns = ["id", "card_id", "deck_id"];
     if (deckToUpdate.is_custom) cardColumns.push("occurences");
