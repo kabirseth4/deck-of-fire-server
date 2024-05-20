@@ -3,7 +3,7 @@ import { Id } from "./types.js";
 export interface NewCard {
   name: string;
   description: string;
-  occurences?: number;
+  occurrences?: number;
   penalty?: number;
   user_id?: Id;
 }
