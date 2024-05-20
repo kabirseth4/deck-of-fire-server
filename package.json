@@ -8,9 +8,12 @@
     "test": "NODE_OPTIONS='--experimental-vm-modules' NODE_NO_WARNINGS=1 jest --detectOpenHandles",
     "test:v": "npm test -- --verbose",
     "postinstall": "npm run build",
-    "db:migrate": "node --no-warnings --loader ts-node/esm node_modules/.bin/knex --knexfile src/db/knexfile.ts migrate:latest",
-    "db:rollback": "node --no-warnings --loader ts-node/esm node_modules/.bin/knex --knexfile src/db/knexfile.ts migrate:rollback",
-    "db:seed": "node --no-warnings --loader ts-node/esm node_modules/.bin/knex --knexfile src/db/knexfile.ts seed:run"
+    "db": "node --no-warnings --loader ts-node/esm node_modules/.bin/knex --knexfile src/db/knexfile.ts",
+    "db:migrate": "npm run db migrate:latest",
+    "db:rollback": "npm run db migrate:rollback",
+    "db:seed": "npm run db seed:run",
+    "db:migrate:make": "npm run db migrate:make",
+    "db:seed:make": "nnpm run db seed:make"
   },
   "type": "module",
   "license": "ISC",

@@ -29,7 +29,7 @@ export interface DeckWithCards extends Deck {
 export interface NewDeckCard {
   card_id: Id;
   deck_id?: Id;
-  occurences?: number;
+  occurrences?: number;
   penalty?: number;
 }
 

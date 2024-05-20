@@ -123,13 +123,13 @@ Example response body:
       "id": 1,
       "name": "Card 1",
       "description": "This is card number 1.",
-      "occurences": 1
+      "occurrences": 1
     },
     {
       "id": 3,
       "name": "Card 3",
       "description": "This is card number 3.",
-      "occurences": 2
+      "occurrences": 2
     },
     {...
   ]
@@ -221,11 +221,11 @@ Example response body:
 | :-------------- | :------- | :--------------------------- |
 | `Authorization` | `number` | **Required** Same as userId. |
 
-| Body         | Type     | Description                                                       |
-| :----------- | :------- | :---------------------------------------------------------------- |
-| `card_id`    | `number` | **Required** Id of card to add.                                   |
-| `occurences` | `number` | **Optional** Occurences of card. Only required if deck is custom. |
-| `penalty`    | `number` | **Optional** Penalty for card. Only required is deck is scored.   |
+| Body          | Type     | Description                                                        |
+| :------------ | :------- | :----------------------------------------------------------------- |
+| `card_id`     | `number` | **Required** Id of card to add.                                    |
+| `occurrences` | `number` | **Optional** occurrences of card. Only required if deck is custom. |
+| `penalty`     | `number` | **Optional** Penalty for card. Only required is deck is scored.    |
 
 Example request body:
 
@@ -233,12 +233,12 @@ Example request body:
 [
   {
     "card_id": 1,
-    "occurences": 5,
+    "occurrences": 5,
     "penalty": 3
   },
   {
     "card_id": 2,
-    "occurences": 3,
+    "occurrences": 3,
     "penalty": 1
   },
   {...
@@ -253,14 +253,14 @@ Example response body:
     "id": 5,
     "card_id": 1,
     "deck_id": 2,
-    "occurences": 5,
+    "occurrences": 5,
     "penalty": 3
   },
   {
     "id": 6,
     "card_id": 2,
     "deck_id": 2,
-    "occurences": 3,
+    "occurrences": 3,
     "penalty": 1
   },
   {...
