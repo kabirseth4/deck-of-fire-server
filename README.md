@@ -18,7 +18,7 @@ Dependecies:
 
 ### Get all user decks
 
-```http
+```
   GET /users/${userId}/decks
 ```
 
@@ -35,26 +35,25 @@ Example response body:
 ```json
 [
   {
-      "id": 1,
-      "name": "Custom deck",
-      "is_scored": 0,
-      "is_custom": 1,
-      "is_playable": 1
+    "id": 1,
+    "name": "Custom deck",
+    "is_scored": 0,
+    "is_custom": 1,
+    "is_playable": 1
   },
   {
-      "id": 2,
-      "name": "Scored custom deck",
-      "is_scored": 1,
-      "is_custom": 1,
-      "is_playable": 1
-  },
-  {...
+    "id": 2,
+    "name": "Scored custom deck",
+    "is_scored": 1,
+    "is_custom": 1,
+    "is_playable": 1
+  }
 ]
 ```
 
 ### Post new deck
 
-```http
+```
   Post /users/${userId}/decks
 ```
 
@@ -96,7 +95,7 @@ Example response body:
 
 ### Get single user deck
 
-```http
+```
   GET /users/${userId}/decks/${deckId}
 ```
 
@@ -240,8 +239,7 @@ Example request body:
     "card_id": 2,
     "occurrences": 3,
     "penalty": 1
-  },
-  {...
+  }
 ]
 ```
 
@@ -262,8 +260,7 @@ Example response body:
     "deck_id": 2,
     "occurrences": 3,
     "penalty": 1
-  },
-  {...
+  }
 ]
 ```
 
