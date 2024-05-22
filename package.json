@@ -7,14 +7,14 @@
     "build": "tsc",
     "test": "NODE_OPTIONS='--experimental-vm-modules' NODE_NO_WARNINGS=1 jest --detectOpenHandles",
     "test:v": "npm test -- --verbose",
-    "postinstall": "npm run build && db:migrate:prod",
     "db": "node --no-warnings --loader ts-node/esm node_modules/.bin/knex --knexfile src/db/knexfile.ts",
     "db:migrate": "npm run db migrate:latest",
-    "db:migrate:prod": "cd dist/db && knex migrate:latest",
+    "db:migrate:prod": "cd dist/db && npx knex migrate:latest",
     "db:rollback": "npm run db migrate:rollback",
     "db:seed": "npm run db seed:run",
     "db:migrate:make": "npm run db migrate:make",
-    "db:seed:make": "nnpm run db seed:make"
+    "db:seed:make": "nnpm run db seed:make",
+    "postinstall": "npm run build && npm run db:migrate:prod"
   },
   "type": "module",
   "license": "ISC",
