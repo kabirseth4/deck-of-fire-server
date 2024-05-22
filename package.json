@@ -7,7 +7,7 @@
     "build": "tsc",
     "test": "NODE_OPTIONS='--experimental-vm-modules' NODE_NO_WARNINGS=1 jest --detectOpenHandles",
     "test:v": "npm test -- --verbose",
-    "postinstall": "npm run build",
+    "postinstall": "npm run db:migrate && npm run build",
     "db": "node --no-warnings --loader ts-node/esm node_modules/.bin/knex --knexfile src/db/knexfile.ts",
     "db:migrate": "npm run db migrate:latest",
     "db:rollback": "npm run db migrate:rollback",
