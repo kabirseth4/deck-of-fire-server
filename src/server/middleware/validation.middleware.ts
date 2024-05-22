@@ -162,6 +162,8 @@ const deckCardBody = async (
 
   try {
     const deckToUpdate = await deckModel.getOne(deckId);
+    if (!deckToUpdate)
+      throw new Error("Unable to retrieve deck from database.");
     const deckToUpdateCards = await deckModel.getCards(deckId, "card.id");
 
     if (
@@ -182,7 +184,7 @@ const deckCardBody = async (
     const mappedCards = [];
 
     for (let i = 0; i < cards.length; i++) {
-      const { card_id, occurences, penalty } = cards[i];
+      const { card_id, occurrences, penalty } = cards[i];
       let mappedCard: NewDeckCard = { card_id };
 
       // Validate request body properties
@@ -192,13 +194,17 @@ const deckCardBody = async (
         });
       }
       if (deckToUpdate.is_custom) {
-        if (occurences === undefined || isNaN(occurences) || occurences < 1) {
+        if (
+          occurrences === undefined ||
+          isNaN(occurrences) ||
+          occurrences < 1
+        ) {
           return res.status(400).json({
             message:
               "Each card for a custom deck must include ccurences, which must be a positive number.",
           });
         }
-        mappedCard.occurences = occurences;
+        mappedCard.occurrences = occurrences;
       }
       if (deckToUpdate.is_scored) {
         if (penalty === undefined || isNaN(penalty) || penalty < 1) {

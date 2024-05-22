@@ -24,9 +24,9 @@ describe("GET /users/:userId/decks", () => {
             expect.objectContaining({
               id: expect.any(Number),
               name: expect.any(String),
-              is_custom: expect.any(Number),
-              is_scored: expect.any(Number),
-              is_playable: expect.any(Number),
+              is_custom: expect.any(Boolean),
+              is_scored: expect.any(Boolean),
+              is_playable: expect.any(Boolean),
             })
           );
         });
@@ -86,9 +86,9 @@ describe("POST /users/:userId/decks", () => {
           expect.objectContaining({
             id: expect.any(Number),
             name: "New deck",
-            is_custom: 0,
-            is_scored: 0,
-            is_playable: 0,
+            is_custom: false,
+            is_scored: false,
+            is_playable: false,
           })
         );
       });
@@ -140,16 +140,16 @@ describe("GET /users/:userId/decks/:deckId", () => {
           expect.objectContaining({
             id: deckId,
             name: expect.any(String),
-            is_custom: expect.any(Number),
-            is_scored: expect.any(Number),
-            is_playable: expect.any(Number),
+            is_custom: expect.any(Boolean),
+            is_scored: expect.any(Boolean),
+            is_playable: expect.any(Boolean),
             cards: expect.any(Array),
           })
         );
       });
   });
 
-  it("returns cards, with names, descriptions, and occurences, for custom deck", async () => {
+  it("returns cards, with names, descriptions, and occurrences, for custom deck", async () => {
     await request(app)
       .get(`/users/${userId}/decks/1`)
       .set(authHeader)
@@ -162,7 +162,7 @@ describe("GET /users/:userId/decks/:deckId", () => {
               id: expect.any(Number),
               name: expect.any(String),
               description: expect.any(String),
-              occurences: expect.any(Number),
+              occurrences: expect.any(Number),
             })
           );
           expect(card).toEqual(
@@ -174,7 +174,7 @@ describe("GET /users/:userId/decks/:deckId", () => {
       });
   });
 
-  it("returns cards, with names, descriptions, occurences, and penalties, for custom scored deck", async () => {
+  it("returns cards, with names, descriptions, occurrences, and penalties, for custom scored deck", async () => {
     await request(app)
       .get(`/users/${userId}/decks/2`)
       .set(authHeader)
@@ -187,7 +187,7 @@ describe("GET /users/:userId/decks/:deckId", () => {
               id: expect.any(Number),
               name: expect.any(String),
               description: expect.any(String),
-              occurences: expect.any(Number),
+              occurrences: expect.any(Number),
               penalty: expect.any(Number),
             })
           );
@@ -213,7 +213,7 @@ describe("GET /users/:userId/decks/:deckId", () => {
           );
           expect(card).toEqual(
             expect.not.objectContaining({
-              occurences: expect.any(Number),
+              occurrences: expect.any(Number),
               penalty: expect.any(Number),
             })
           );
@@ -240,7 +240,7 @@ describe("GET /users/:userId/decks/:deckId", () => {
           );
           expect(card).toEqual(
             expect.not.objectContaining({
-              occurences: expect.any(Number),
+              occurrences: expect.any(Number),
             })
           );
         });
@@ -362,7 +362,7 @@ describe("POST /users/:userId/decks/:deckId/cards", () => {
       .expect(400);
   });
 
-  it("returns 400 if no occurences in request body for custom deck", async () => {
+  it("returns 400 if no occurrences in request body for custom deck", async () => {
     await request(app)
       .post(`/users/${userId}/decks/6/cards`)
       .set(authHeader)
@@ -411,7 +411,7 @@ describe("POST /users/:userId/decks/:deckId/cards", () => {
     await request(app)
       .post(`/users/${userId}/decks/1/cards`)
       .set(authHeader)
-      .send([{ card_id: 1, occurences: 1 }])
+      .send([{ card_id: 1, occurrences: 1 }])
       .expect(409);
   });
 

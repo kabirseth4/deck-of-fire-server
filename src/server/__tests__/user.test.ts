@@ -37,9 +37,9 @@ describe("POST /users/register", () => {
         expect.objectContaining({
           id: expect.any(Number),
           name: "The Deck of Fire",
-          is_custom: 0,
-          is_scored: 0,
-          is_playable: 1,
+          is_custom: false,
+          is_scored: false,
+          is_playable: true,
         }),
       ])
     );
