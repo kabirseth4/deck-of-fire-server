@@ -8,10 +8,8 @@ export const userRoutes = Router({ mergeParams: true });
 
 userRoutes
   .route("/register")
-  .post(validate.registerUserBody, userController.registerUser);
-userRoutes
-  .route("/login")
-  .post(validate.loginUserBody, userController.loginUser);
+  .post(validate.registerBody, userController.register);
+userRoutes.route("/login").post(validate.logInBody, userController.logIn);
 
 userRoutes.use("/:userId", validate.user, authorize.user);
 userRoutes.use("/:userId/decks", deckRoutes);

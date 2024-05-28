@@ -1,6 +1,3 @@
-import { Request, Response, NextFunction } from "express";
-import { userModel, deckModel, cardModel } from "../models/index.js";
-import { validateEmail } from "../utils/validation.utils.js";
 import type {
   NewUser,
   UserLogin,
@@ -8,12 +5,15 @@ import type {
   NewDeckCard,
   NewCard,
 } from "../types/index.js";
+import { Request, Response, NextFunction } from "express";
+import { userModel, deckModel, cardModel } from "../models/index.js";
+import { validateEmail } from "../utils/validation.utils.js";
 
 export const user = async (req: Request, res: Response, next: NextFunction) => {
   const { userId } = req.params;
 
   try {
-    const user = await userModel.getOne(userId);
+    const user = await userModel.readOne(userId);
 
     if (!user) {
       return res
@@ -34,7 +34,7 @@ export const deck = async (req: Request, res: Response, next: NextFunction) => {
   const { userId, deckId } = req.params;
 
   try {
-    const deck = await deckModel.getOne(deckId);
+    const deck = await deckModel.readOne(deckId);
 
     if (!deck) {
       return res
@@ -57,7 +57,7 @@ export const deck = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const registerUserBody = async (
+export const registerBody = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -77,7 +77,7 @@ export const registerUserBody = async (
   }
 
   try {
-    const existingUsers = await userModel.getAll();
+    const existingUsers = await userModel.readAll();
 
     const isUnique = { email: true, username: true };
     existingUsers.forEach((user) => {
@@ -107,7 +107,7 @@ export const registerUserBody = async (
   }
 };
 
-export const loginUserBody = async (
+export const logInBody = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -173,10 +173,10 @@ export const deckCardBody = async (
   const cards = req.body as NewDeckCard[];
 
   try {
-    const deckToUpdate = await deckModel.getOne(deckId);
+    const deckToUpdate = await deckModel.readOne(deckId);
     if (!deckToUpdate)
       throw new Error("Unable to retrieve deck from database.");
-    const deckToUpdateCards = await deckModel.getCards(deckId, "card.id");
+    const deckToUpdateCards = await deckModel.readCards(deckId, "card.id");
 
     if (
       !deckToUpdate.is_custom &&
@@ -229,7 +229,7 @@ export const deckCardBody = async (
       }
 
       // Validate card
-      const card = await cardModel.getOne(card_id);
+      const card = await cardModel.readOne(card_id);
       if (!card) {
         return res.status(404).json({
           message: `Could not find card ${card_id}.`,

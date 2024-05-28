@@ -1,7 +1,6 @@
 import request from "supertest";
 import app from "../app";
 import knex from "../configs/knex.config.js";
-import { deckModel, cardModel } from "../models/index.js";
 
 describe("POST /users/register", () => {
   it("returns new user and 201", async () => {
@@ -23,52 +22,42 @@ describe("POST /users/register", () => {
       });
   });
 
-  it("adds default deck to new user", async () => {
+  it("adds default deck and cards to new user", async () => {
     const { body: user } = await request(app).post("/users/register").send({
       username: "newuser",
       email: "new.user@test.com",
       password: "S00per$3cret",
     });
 
-    const decks = await deckModel.getAll(user.id);
+    const decks = await knex("deck")
+      .where({ user_id: user.id })
+      .select("id", "name", "is_scored", "is_custom", "is_playable");
+
+    expect(decks.length).toEqual(1);
 
     expect(decks).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
           id: expect.any(Number),
           name: "The Deck of Fire",
-          is_custom: false,
-          is_scored: false,
-          is_playable: true,
+          is_custom: 0,
+          is_scored: 0,
+          is_playable: 1,
         }),
       ])
     );
-  });
 
-  it("adds default cards to new user", async () => {
-    const { body: user } = await request(app).post("/users/register").send({
-      username: "newuser",
-      email: "new.user@test.com",
-      password: "S00per$3cret",
-    });
-
-    const cards = await cardModel.getAll(user.id);
+    const cards = await knex("card")
+      .where({ user_id: user.id })
+      .select("id", "name", "description");
 
     expect(cards.length).toEqual(13);
-  });
 
-  it("adds default cards to new user's default deck", async () => {
-    const { body: user } = await request(app).post("/users/register").send({
-      username: "newuser",
-      email: "new.user@test.com",
-      password: "S00per$3cret",
-    });
+    const deckCards = await knex("card")
+      .join("deck_card", "deck_card.card_id", "card.id")
+      .where({ deck_id: decks[0].id });
 
-    const [defaultDeck] = await deckModel.getAll(user.id);
-
-    const cards = await deckModel.getCards(defaultDeck.id);
-
-    expect(cards.length).toEqual(13);
+    expect(deckCards.length).toEqual(13);
   });
 
   it("returns 400 if body is missing username", async () => {

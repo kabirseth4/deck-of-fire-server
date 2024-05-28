@@ -1,12 +1,12 @@
+import type { NewCard } from "../types/index.js";
 import { Request, Response } from "express";
 import { cardModel } from "../models/index.js";
-import type { NewCard } from "../types/index.js";
 
-export const allCards = async (req: Request, res: Response) => {
+export const getAllCards = async (req: Request, res: Response) => {
   const { userId } = req.params;
 
   try {
-    const cards = await cardModel.getAll(userId);
+    const cards = await cardModel.readAll(userId);
     return res.json(cards);
   } catch (error) {
     return res
@@ -15,12 +15,12 @@ export const allCards = async (req: Request, res: Response) => {
   }
 };
 
-export const newCard = async (req: Request, res: Response) => {
+export const postNewCard = async (req: Request, res: Response) => {
   const { userId } = req.params;
   const newCard: NewCard = { ...req.body, user_id: userId };
 
   try {
-    const createdCard = await cardModel.addNew(newCard);
+    const createdCard = await cardModel.create(newCard);
     return res.status(201).json(createdCard);
   } catch (error) {
     return res

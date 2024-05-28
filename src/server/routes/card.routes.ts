@@ -6,5 +6,5 @@ export const cardRoutes = Router({ mergeParams: true });
 
 cardRoutes
   .route("/")
-  .get(cardController.allCards)
-  .post(validate.cardBody, cardController.newCard);
+  .get(cardController.getAllCards)
+  .post(validate.cardBody, cardController.postNewCard);

@@ -1,3 +1,4 @@
+import type { Deck, Card } from "../types/index.js";
 import request from "supertest";
 import app from "../app.js";
 import knex from "../configs/knex.config.js";
@@ -6,7 +7,6 @@ import {
   userValidationTestCases,
   deckValidationTestCases,
 } from "./helpers/test.cases.js";
-import { Deck, Card } from "../types/index.js";
 
 describe("GET /users/:userId/decks", () => {
   it("returns all decks for user", async () => {

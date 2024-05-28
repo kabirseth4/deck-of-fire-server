@@ -1,22 +1,22 @@
-import knex from "../configs/knex.config.js";
 import type { Id, NewUser, User, UserWithPassword } from "../types/index.js";
+import knex from "../configs/knex.config.js";
+import { validateEmail } from "../utils/validation.utils.js";
 
-export const getAll = async () => {
+export const readAll = async () => {
   const users: User[] = await knex("user").select("id", "username", "email");
   return users;
 };
 
-export const getOne = async (id: Id) => {
-  const user: UserWithPassword = await knex("user").where({ id }).first();
+export const readOne = async (idOrEmail: Id | string) => {
+  const query = validateEmail(idOrEmail)
+    ? { email: idOrEmail }
+    : { id: idOrEmail };
+
+  const user: UserWithPassword = await knex("user").where(query).first();
   return user;
 };
 
-export const getOneByEmail = async (email: string) => {
-  const user: UserWithPassword = await knex("user").where({ email }).first();
-  return user;
-};
-
-export const register = async (newUser: NewUser) => {
+export const create = async (newUser: NewUser) => {
   const [createdUserId]: number[] = await knex("user").insert(newUser);
   const createdUser: User = await knex("user")
     .select("id", "username", "email")

@@ -1,6 +1,6 @@
+import type { IncomingHttpHeaders } from "http";
 import knex from "../../configs/knex.config.js";
 import jwt from "jsonwebtoken";
-import type { IncomingHttpHeaders } from "http";
 
 export const userId = 1;
 export const incorrectUserId = 999;

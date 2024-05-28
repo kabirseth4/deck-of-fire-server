@@ -1,8 +1,3 @@
-import { hashSync, compareSync } from "bcrypt";
-import jwt from "jsonwebtoken";
-import { Request, Response } from "express";
-import { userModel, deckModel, cardModel } from "../models/index.js";
-import { defaultDeck, defaultCards } from "../data/index.js";
 import type {
   NewUser,
   UserLogin,
@@ -10,8 +5,13 @@ import type {
   NewDeckCard,
   NewCard,
 } from "../types/index.js";
+import { hashSync, compareSync } from "bcrypt";
+import jwt from "jsonwebtoken";
+import { Request, Response } from "express";
+import { userModel, deckModel, cardModel } from "../models/index.js";
+import { defaultDeck, defaultCards } from "../data/index.js";
 
-export const registerUser = async (req: Request, res: Response) => {
+export const register = async (req: Request, res: Response) => {
   const { username, email, password } = req.body as NewUser;
 
   const hashedPassword = hashSync(password, 6);
@@ -22,18 +22,18 @@ export const registerUser = async (req: Request, res: Response) => {
   };
 
   try {
-    const createdUser = await userModel.register(newUser);
+    const createdUser = await userModel.create(newUser);
 
     // Add default deck
     const defaultUserDeck: NewDeck = {
       ...defaultDeck,
       user_id: createdUser.id,
     };
-    const addedDeck = await deckModel.addNew(defaultUserDeck);
+    const addedDeck = await deckModel.create(defaultUserDeck);
 
     for (const card of defaultCards) {
       const cardToCreate: NewCard = { ...card, user_id: createdUser.id };
-      const createdCard = await cardModel.addNew(cardToCreate);
+      const createdCard = await cardModel.create(cardToCreate);
       const cardToAdd: NewDeckCard = {
         card_id: createdCard.id,
         deck_id: addedDeck.id,
@@ -51,11 +51,11 @@ export const registerUser = async (req: Request, res: Response) => {
   }
 };
 
-export const loginUser = async (req: Request, res: Response) => {
+export const logIn = async (req: Request, res: Response) => {
   const { email, password } = req.body as UserLogin;
 
   try {
-    const user = await userModel.getOneByEmail(email);
+    const user = await userModel.readOne(email);
 
     if (!user) {
       return res.status(401).json({ message: "Invalid login credentials" });

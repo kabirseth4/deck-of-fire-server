@@ -44,11 +44,23 @@ describe("GET /users/:userId/cards", () => {
 });
 
 describe("POST /users/:userId/cards", () => {
-  it("adds new card to user", async () => {
+  it("creates new card and returns card and 201", async () => {
+    const newCard = { name: "New card", description: "This is a new card." };
+
     const { body: card } = await request(app)
       .post(`/users/${userId}/cards`)
       .set(authHeader)
-      .send({ name: "New card", description: "This is a new card." });
+      .send(newCard)
+      .expect("Content-Type", /json/)
+      .expect(201)
+      .expect(({ body }) => {
+        expect(body).toEqual(
+          expect.objectContaining({
+            id: expect.any(Number),
+            ...newCard,
+          })
+        );
+      });
 
     const cards = await knex("card").where({ user_id: userId });
 
@@ -56,29 +68,10 @@ describe("POST /users/:userId/cards", () => {
       expect.arrayContaining([
         expect.objectContaining({
           id: card.id,
-          name: "New card",
-          description: "This is a new card.",
+          ...newCard,
         }),
       ])
     );
-  });
-
-  it("returns new card and 201", async () => {
-    await request(app)
-      .post(`/users/${userId}/cards`)
-      .set(authHeader)
-      .send({ name: "New card", description: "This is a new card." })
-      .expect("Content-Type", /json/)
-      .expect(201)
-      .expect(({ body }) => {
-        expect(body).toEqual(
-          expect.objectContaining({
-            id: expect.any(Number),
-            name: "New card",
-            description: "This is a new card.",
-          })
-        );
-      });
   });
 
   it("returns 400 if no name in request body", async () => {

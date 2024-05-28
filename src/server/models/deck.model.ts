@@ -1,4 +1,3 @@
-import knex from "../configs/knex.config.js";
 import type {
   NewDeck,
   Deck,
@@ -8,8 +7,9 @@ import type {
   Card,
   Id,
 } from "../types/index.js";
+import knex from "../configs/knex.config.js";
 
-export const getAll = async (userId: Id) => {
+export const readAll = async (userId: Id) => {
   const dBDecks: DBDeck[] = await knex("deck")
     .where({ user_id: userId })
     .select("id", "name", "is_scored", "is_custom", "is_playable");
@@ -26,7 +26,7 @@ export const getAll = async (userId: Id) => {
   return decks;
 };
 
-export const getOne = async (deckId: Id) => {
+export const readOne = async (deckId: Id) => {
   const dBDeck: DBDeck = await knex("deck")
     .select("id", "name", "is_scored", "is_custom", "is_playable", "user_id")
     .where({ id: deckId })
@@ -46,7 +46,7 @@ export const getOne = async (deckId: Id) => {
   return deck;
 };
 
-export const getCards = async (
+export const readCards = async (
   deckId: Id,
   columns: string[] | string = "*"
 ) => {
@@ -57,9 +57,9 @@ export const getCards = async (
   return cards;
 };
 
-export const addNew = async (newDeck: NewDeck) => {
+export const create = async (newDeck: NewDeck) => {
   const [newDeckId]: number[] = await knex("deck").insert(newDeck);
-  const createdDeck = await getOne(newDeckId);
+  const createdDeck = await readOne(newDeckId);
   if (!createdDeck) throw new Error("Unable to retrieve deck from database");
   delete createdDeck?.user_id;
   return createdDeck;
