@@ -32,12 +32,16 @@ describe("GET /users/:userId/decks", () => {
       });
   });
 
-  it.each(userValidationTestCases)(
-    "$description",
-    async ({ user, header, status }) => {
-      await request(app).get(`/users/${user}/decks`).set(header).expect(status);
-    }
-  );
+  it("passes user validation test cases", async () => {
+    await Promise.all(
+      userValidationTestCases.map(async ({ user, header, status }) => {
+        await request(app)
+          .get(`/users/${user}/decks`)
+          .set(header)
+          .expect(status);
+      })
+    );
+  });
 
   it("returns 500 if database error", async () => {
     await knex.migrate.rollback();
@@ -52,29 +56,8 @@ describe("GET /users/:userId/decks", () => {
 });
 
 describe("POST /users/:userId/decks", () => {
-  it("adds new deck to user", async () => {
+  it("creates new deck and returns deck with 201", async () => {
     const { body: deck } = await request(app)
-      .post(`/users/${userId}/decks`)
-      .set(authHeader)
-      .send({ name: "New deck" });
-
-    const decks = await knex("deck").where({ user_id: userId });
-
-    expect(decks).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          id: deck.id,
-          name: "New deck",
-          is_custom: 0,
-          is_scored: 0,
-          is_playable: 0,
-        }),
-      ])
-    );
-  });
-
-  it("returns new deck and 201", async () => {
-    await request(app)
       .post(`/users/${userId}/decks`)
       .set(authHeader)
       .send({ name: "New deck" })
@@ -91,9 +74,23 @@ describe("POST /users/:userId/decks", () => {
           })
         );
       });
+
+    const decks = await knex("deck").where({ user_id: userId });
+
+    expect(decks).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: deck.id,
+          name: "New deck",
+          is_custom: 0,
+          is_scored: 0,
+          is_playable: 0,
+        }),
+      ])
+    );
   });
 
-  it("returns 400 if no name in request body", async () => {
+  it("returns 400 if body is missing name", async () => {
     await request(app)
       .post(`/users/${userId}/decks`)
       .set(authHeader)
@@ -101,16 +98,16 @@ describe("POST /users/:userId/decks", () => {
       .expect(400);
   });
 
-  it.each(userValidationTestCases)(
-    "$description",
-    async ({ user, header, status }) => {
-      await request(app)
-        .post(`/users/${user}/decks`)
-        .set(header)
-        .send({ name: "New deck" })
-        .expect(status);
-    }
-  );
+  it("passes user validation test cases", async () => {
+    await Promise.all(
+      userValidationTestCases.map(async ({ user, header, status }) => {
+        await request(app)
+          .post(`/users/${user}/decks`)
+          .set(header)
+          .expect(status);
+      })
+    );
+  });
 
   it("returns 500 if database error", async () => {
     await knex.migrate.rollback();
@@ -128,34 +125,25 @@ describe("POST /users/:userId/decks", () => {
 describe("GET /users/:userId/decks/:deckId", () => {
   const deckId = 1;
 
-  it("returns deck details and cards for single deck", async () => {
+  it("returns correct deck details and cards for single deck", async () => {
+    // custom deck
     await request(app)
-      .get(`/users/${userId}/decks/${deckId}`)
+      .get(`/users/${userId}/decks/1`)
       .set(authHeader)
       .expect("Content-Type", /json/)
       .expect(200)
       .expect(({ body }) => {
         expect(body).toEqual(
           expect.objectContaining({
-            id: deckId,
+            id: 1,
             name: expect.any(String),
-            is_custom: expect.any(Boolean),
-            is_scored: expect.any(Boolean),
+            is_custom: true,
+            is_scored: false,
             is_playable: expect.any(Boolean),
             cards: expect.any(Array),
           })
         );
-      });
-  });
-
-  it("returns cards, with names, descriptions, and occurrences, for custom deck", async () => {
-    await request(app)
-      .get(`/users/${userId}/decks/1`)
-      .set(authHeader)
-      .expect("Content-Type", /json/)
-      .expect(200)
-      .expect(({ body: { cards } }) => {
-        cards.forEach((card: Card) => {
+        body.cards.forEach((card: Card) => {
           expect(card).toEqual(
             expect.objectContaining({
               id: expect.any(Number),
@@ -171,16 +159,25 @@ describe("GET /users/:userId/decks/:deckId", () => {
           );
         });
       });
-  });
 
-  it("returns cards, with names, descriptions, occurrences, and penalties, for custom scored deck", async () => {
+    // custom scored deck
     await request(app)
       .get(`/users/${userId}/decks/2`)
       .set(authHeader)
       .expect("Content-Type", /json/)
       .expect(200)
-      .expect(({ body: { cards } }) => {
-        cards.forEach((card: Card) => {
+      .expect(({ body }) => {
+        expect(body).toEqual(
+          expect.objectContaining({
+            id: 2,
+            name: expect.any(String),
+            is_custom: true,
+            is_scored: true,
+            is_playable: expect.any(Boolean),
+            cards: expect.any(Array),
+          })
+        );
+        body.cards.forEach((card: Card) => {
           expect(card).toEqual(
             expect.objectContaining({
               id: expect.any(Number),
@@ -192,17 +189,26 @@ describe("GET /users/:userId/decks/:deckId", () => {
           );
         });
       });
-  });
 
-  it("returns 13 cards, with names and descriptions, for standard deck", async () => {
+    // standard deck
     await request(app)
       .get(`/users/${userId}/decks/3`)
       .set(authHeader)
       .expect("Content-Type", /json/)
       .expect(200)
-      .expect(({ body: { cards } }) => {
-        expect(cards).toHaveLength(13);
-        cards.forEach((card: Card) => {
+      .expect(({ body }) => {
+        expect(body).toEqual(
+          expect.objectContaining({
+            id: 3,
+            name: expect.any(String),
+            is_custom: false,
+            is_scored: false,
+            is_playable: expect.any(Boolean),
+            cards: expect.any(Array),
+          })
+        );
+        expect(body.cards).toHaveLength(13);
+        body.cards.forEach((card: Card) => {
           expect(card).toEqual(
             expect.objectContaining({
               id: expect.any(Number),
@@ -218,17 +224,26 @@ describe("GET /users/:userId/decks/:deckId", () => {
           );
         });
       });
-  });
 
-  it("returns 13 cards, with names, descriptions, and penalties, for scored standard deck", async () => {
+    // scored standard deck
     await request(app)
       .get(`/users/${userId}/decks/4`)
       .set(authHeader)
       .expect("Content-Type", /json/)
       .expect(200)
-      .expect(({ body: { cards } }) => {
-        expect(cards).toHaveLength(13);
-        cards.forEach((card: Card) => {
+      .expect(({ body }) => {
+        expect(body).toEqual(
+          expect.objectContaining({
+            id: 4,
+            name: expect.any(String),
+            is_custom: false,
+            is_scored: true,
+            is_playable: expect.any(Boolean),
+            cards: expect.any(Array),
+          })
+        );
+        expect(body.cards).toHaveLength(13);
+        body.cards.forEach((card: Card) => {
           expect(card).toEqual(
             expect.objectContaining({
               id: expect.any(Number),
@@ -253,15 +268,16 @@ describe("GET /users/:userId/decks/:deckId", () => {
       .expect(status);
   });
 
-  it.each(userValidationTestCases)(
-    "$description",
-    async ({ user, header, status }) => {
-      await request(app)
-        .get(`/users/${user}/decks/${deckId}`)
-        .set(header)
-        .expect(status);
-    }
-  );
+  it("passes user validation test cases", async () => {
+    await Promise.all(
+      userValidationTestCases.map(async ({ user, header, status }) => {
+        await request(app)
+          .post(`/users/${user}/decks/${deckId}`)
+          .set(header)
+          .expect(status);
+      })
+    );
+  });
 
   it("returns 500 if database error", async () => {
     await knex.migrate.rollback();
@@ -278,36 +294,7 @@ describe("GET /users/:userId/decks/:deckId", () => {
 describe("POST /users/:userId/decks/:deckId/cards", () => {
   const deckId = 5; // Empty deck
 
-  it("adds cards to deck", async () => {
-    await request(app)
-      .post(`/users/${userId}/decks/${deckId}/cards`)
-      .set(authHeader)
-      .send([{ card_id: 1 }, { card_id: 2 }, { card_id: 3 }]);
-
-    const cards = await knex("deck_card").where({ deck_id: deckId });
-
-    expect(cards).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          id: expect.any(Number),
-          card_id: 1,
-          deck_id: 5,
-        }),
-        expect.objectContaining({
-          id: expect.any(Number),
-          card_id: 2,
-          deck_id: 5,
-        }),
-        expect.objectContaining({
-          id: expect.any(Number),
-          card_id: 3,
-          deck_id: 5,
-        }),
-      ])
-    );
-  });
-
-  it("returns added cards and 201", async () => {
+  it("adds cards to deck and returns added cards with 201", async () => {
     await request(app)
       .post(`/users/${userId}/decks/${deckId}/cards`)
       .set(authHeader)
@@ -335,41 +322,60 @@ describe("POST /users/:userId/decks/:deckId/cards", () => {
           ])
         );
       });
+
+    const cards = await knex("deck_card").where({ deck_id: deckId });
+
+    expect(cards).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: expect.any(Number),
+          card_id: 1,
+          deck_id: 5,
+        }),
+        expect.objectContaining({
+          id: expect.any(Number),
+          card_id: 2,
+          deck_id: 5,
+        }),
+        expect.objectContaining({
+          id: expect.any(Number),
+          card_id: 3,
+          deck_id: 5,
+        }),
+      ])
+    );
   });
 
-  it("returns 400 if no cards in request body", async () => {
+  it("returns 400 if request body is invalid", async () => {
+    // no cards
     await request(app)
       .post(`/users/${userId}/decks/${deckId}/cards`)
       .set(authHeader)
       .send([])
       .expect(400);
-  });
 
-  it("returns 400 if request body is not an array", async () => {
+    // not array
     await request(app)
       .post(`/users/${userId}/decks/${deckId}/cards`)
       .set(authHeader)
       .send({ card_id: 1 })
       .expect(400);
-  });
 
-  it("returns 400 if no card_id in request body", async () => {
+    // no card_id
     await request(app)
       .post(`/users/${userId}/decks/${deckId}/cards`)
       .set(authHeader)
       .send([{}])
       .expect(400);
-  });
 
-  it("returns 400 if no occurrences in request body for custom deck", async () => {
+    // no occurrences for custom deck
     await request(app)
       .post(`/users/${userId}/decks/6/cards`)
       .set(authHeader)
       .send([{ card_id: 1 }])
       .expect(400);
-  });
 
-  it("returns 400 if no penalty in request body for scored deck", async () => {
+    // no penalty for scored deck
     await request(app)
       .post(`/users/${userId}/decks/8/cards`)
       .set(authHeader)
@@ -377,7 +383,8 @@ describe("POST /users/:userId/decks/:deckId/cards", () => {
       .expect(400);
   });
 
-  it("returns 409 if adding cards to standard deck exceeds 13", async () => {
+  it("returns 409 if conflict", async () => {
+    // exceeds 13 cards in standard deck
     await request(app)
       .post(`/users/${userId}/decks/3/cards`)
       .set(authHeader)
@@ -404,9 +411,8 @@ describe("POST /users/:userId/decks/:deckId/cards", () => {
         { card_id: 14 },
       ])
       .expect(409);
-  });
 
-  it("returns 409 if card already exist in deck", async () => {
+    // card already exists in deck
     await request(app)
       .post(`/users/${userId}/decks/1/cards`)
       .set(authHeader)
@@ -430,24 +436,29 @@ describe("POST /users/:userId/decks/:deckId/cards", () => {
       .expect(401);
   });
 
-  it.each(deckValidationTestCases)("$description", async ({ deck, status }) => {
-    await request(app)
-      .get(`/users/${userId}/decks/${deck}/cards`)
-      .set(authHeader)
-      .send([{ card_id: 1 }])
-      .expect(status);
+  it("passes deck validation test cases", async () => {
+    await Promise.all(
+      deckValidationTestCases.map(async ({ deck, status }) => {
+        await request(app)
+          .get(`/users/${userId}/decks/${deck}/cards`)
+          .set(authHeader)
+          .send([{ card_id: 1 }])
+          .expect(status);
+      })
+    );
   });
 
-  it.each(userValidationTestCases)(
-    "$description",
-    async ({ user, header, status }) => {
-      await request(app)
-        .post(`/users/${user}/decks/${deckId}/cards`)
-        .set(header)
-        .send([{ card_id: 1 }])
-        .expect(status);
-    }
-  );
+  it("passes user validation test cases", async () => {
+    await Promise.all(
+      userValidationTestCases.map(async ({ user, header, status }) => {
+        await request(app)
+          .post(`/users/${user}/decks/${deckId}/cards`)
+          .set(header)
+          .send([{ card_id: 1 }])
+          .expect(status);
+      })
+    );
+  });
 
   it("returns 500 if database error", async () => {
     await knex.migrate.rollback();

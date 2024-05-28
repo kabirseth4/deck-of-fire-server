@@ -60,28 +60,20 @@ describe("POST /users/register", () => {
     expect(deckCards.length).toEqual(13);
   });
 
-  it("returns 400 if body is missing username", async () => {
+  it("returns 400 if body has missing or invalid properties", async () => {
+    // missing username
     await request(app)
       .post("/users/register")
       .send({ email: "new.user@test.com", password: "S00per$3cret" })
       .expect(400);
-  });
 
-  it("returns 400 if body is missing email", async () => {
+    // missing email
     await request(app)
       .post("/users/register")
       .send({ username: "newuser", password: "S00per$3cret" })
       .expect(400);
-  });
 
-  it("returns 400 if body is missing password", async () => {
-    await request(app)
-      .post("/users/register")
-      .send({ username: "newuser", email: "new.user@test.com" })
-      .expect(400);
-  });
-
-  it("returns 400 if email is an invalid format", async () => {
+    // invalid email
     await request(app)
       .post("/users/register")
       .send({
@@ -90,9 +82,16 @@ describe("POST /users/register", () => {
         password: "S00per$3cret",
       })
       .expect(400);
+
+    // missing password
+    await request(app)
+      .post("/users/register")
+      .send({ username: "newuser", email: "new.user@test.com" })
+      .expect(400);
   });
 
-  it("returns 409 if username is already in use", async () => {
+  it("returns 409 if username or email is already in use", async () => {
+    // username conflict
     await request(app)
       .post("/users/register")
       .send({
@@ -101,9 +100,8 @@ describe("POST /users/register", () => {
         password: "S00per$3cret",
       })
       .expect(409);
-  });
 
-  it("returns 409 if email is already in use", async () => {
+    // email conflict
     await request(app)
       .post("/users/register")
       .send({
@@ -147,31 +145,8 @@ describe("POST /users/login", () => {
       });
   });
 
-  it("returns 400 if body is missing email", async () => {
-    await request(app)
-      .post("/users/login")
-      .send({ password: "S00per$3cret" })
-      .expect(400);
-  });
-
-  it("returns 400 if body is missing password", async () => {
-    await request(app)
-      .post("/users/login")
-      .send({ email: "test.user@email.com" })
-      .expect(400);
-  });
-
-  it("returns 400 if email is an invalid format", async () => {
-    await request(app)
-      .post("/users/login")
-      .send({
-        email: "test.user.com",
-        password: "S00per$3cret",
-      })
-      .expect(400);
-  });
-
-  it("returns 401 if email is not found", async () => {
+  it("returns 401 if login credentials are invalid", async () => {
+    // email invalid
     await request(app)
       .post("/users/login")
       .send({
@@ -179,9 +154,8 @@ describe("POST /users/login", () => {
         password: "S00per$3cret",
       })
       .expect(401);
-  });
 
-  it("returns 401 if password is incorrect", async () => {
+    // password invalid
     await request(app)
       .post("/users/login")
       .send({
@@ -189,6 +163,29 @@ describe("POST /users/login", () => {
         password: "supersecret",
       })
       .expect(401);
+  });
+
+  it("returns 400 if body has missing or incorrectly formatted properties", async () => {
+    // missing email
+    await request(app)
+      .post("/users/login")
+      .send({ password: "S00per$3cret" })
+      .expect(400);
+
+    // missing password
+    await request(app)
+      .post("/users/login")
+      .send({ email: "test.user@email.com" })
+      .expect(400);
+
+    // email incorrect format
+    await request(app)
+      .post("/users/login")
+      .send({
+        email: "test.user.com",
+        password: "S00per$3cret",
+      })
+      .expect(400);
   });
 
   it("returns 500 if database error", async () => {

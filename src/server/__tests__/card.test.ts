@@ -24,12 +24,16 @@ describe("GET /users/:userId/cards", () => {
       });
   });
 
-  it.each(userValidationTestCases)(
-    "$description",
-    async ({ user, header, status }) => {
-      await request(app).get(`/users/${user}/cards`).set(header).expect(status);
-    }
-  );
+  it("passes user validation test cases", async () => {
+    await Promise.all(
+      userValidationTestCases.map(async ({ user, header, status }) => {
+        await request(app)
+          .get(`/users/${user}/cards`)
+          .set(header)
+          .expect(status);
+      })
+    );
+  });
 
   it("returns 500 if database error", async () => {
     await knex.migrate.rollback();
@@ -74,15 +78,15 @@ describe("POST /users/:userId/cards", () => {
     );
   });
 
-  it("returns 400 if no name in request body", async () => {
+  it("returns 400 if body is missing properties", async () => {
+    // no name
     await request(app)
       .post(`/users/${userId}/cards`)
       .set(authHeader)
       .send({ description: "This is a new card." })
       .expect(400);
-  });
 
-  it("returns 400 if no description in request body", async () => {
+    // no description
     await request(app)
       .post(`/users/${userId}/cards`)
       .set(authHeader)
@@ -90,16 +94,17 @@ describe("POST /users/:userId/cards", () => {
       .expect(400);
   });
 
-  it.each(userValidationTestCases)(
-    "$description",
-    async ({ user, header, status }) => {
-      await request(app)
-        .post(`/users/${user}/cards`)
-        .set(header)
-        .send({ name: "New card" })
-        .expect(status);
-    }
-  );
+  it("passes user validation test cases", async () => {
+    await Promise.all(
+      userValidationTestCases.map(async ({ user, header, status }) => {
+        await request(app)
+          .post(`/users/${user}/cards`)
+          .set(header)
+          .send({ name: "New card" })
+          .expect(status);
+      })
+    );
+  });
 
   it("returns 500 if database error", async () => {
     await knex.migrate.rollback();
