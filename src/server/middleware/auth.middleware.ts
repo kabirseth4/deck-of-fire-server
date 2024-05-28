@@ -37,5 +37,3 @@ export const user = async (req: Request, res: Response, next: NextFunction) => {
       .json({ message: "Unable to authorize user.", error });
   }
 };
-
-export default { user };

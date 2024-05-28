@@ -1,4 +1,4 @@
-import { Id, SQLBoolean } from "./types.js";
+import { Id, SQLBoolean } from "./index.js";
 import { Card } from "./card.js";
 
 export interface DBDeck {

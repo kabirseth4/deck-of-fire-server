@@ -1,9 +1,10 @@
 import { Router } from "express";
-import validate from "../middleware/validation.middleware.js";
-import { allCards, newCard } from "../controllers/card.controller.js";
+import { validate } from "../middleware/index.js";
+import { cardController } from "../controllers/index.js";
 
-const router = Router({ mergeParams: true });
+export const cardRoutes = Router({ mergeParams: true });
 
-router.route("/").get(allCards).post(validate.cardBody, newCard);
-
-export default router;
+cardRoutes
+  .route("/")
+  .get(cardController.allCards)
+  .post(validate.cardBody, cardController.newCard);

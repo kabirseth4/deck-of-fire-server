@@ -1,6 +1,6 @@
-import { NewCard } from "../types/card.js";
+import type { NewCard } from "../types/index.js";
 
-export const defaultCards = [
+export const defaultCards: NewCard[] = [
   {
     name: "You",
     description: "Pick a person to take a penalty",
@@ -60,4 +60,4 @@ export const defaultCards = [
     description:
       "Everyone starts drinking one after the other and can stop when the person to their right stops",
   },
-] as NewCard[];
+];

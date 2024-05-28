@@ -1,11 +1,15 @@
 import { Request, Response, NextFunction } from "express";
 import { userModel, deckModel, cardModel } from "../models/index.js";
 import { validateEmail } from "../utils/validation.utils.js";
-import { NewUser, UserLogin } from "../types/user.js";
-import { NewDeck, NewDeckCard } from "../types/deck.js";
-import { NewCard } from "../types/card.js";
+import type {
+  NewUser,
+  UserLogin,
+  NewDeck,
+  NewDeckCard,
+  NewCard,
+} from "../types/index.js";
 
-const user = async (req: Request, res: Response, next: NextFunction) => {
+export const user = async (req: Request, res: Response, next: NextFunction) => {
   const { userId } = req.params;
 
   try {
@@ -26,7 +30,7 @@ const user = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const deck = async (req: Request, res: Response, next: NextFunction) => {
+export const deck = async (req: Request, res: Response, next: NextFunction) => {
   const { userId, deckId } = req.params;
 
   try {
@@ -53,7 +57,7 @@ const deck = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const registerUserBody = async (
+export const registerUserBody = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -103,7 +107,7 @@ const registerUserBody = async (
   }
 };
 
-const loginUserBody = async (
+export const loginUserBody = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -126,7 +130,11 @@ const loginUserBody = async (
   next();
 };
 
-const deckBody = async (req: Request, res: Response, next: NextFunction) => {
+export const deckBody = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { name, is_scored, is_custom } = req.body as NewDeck;
 
   if (!name) {
@@ -139,7 +147,11 @@ const deckBody = async (req: Request, res: Response, next: NextFunction) => {
   next();
 };
 
-const cardBody = async (req: Request, res: Response, next: NextFunction) => {
+export const cardBody = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { name, description } = req.body as NewCard;
 
   if (!name || !description) {
@@ -152,7 +164,7 @@ const cardBody = async (req: Request, res: Response, next: NextFunction) => {
   next();
 };
 
-const deckCardBody = async (
+export const deckCardBody = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -248,14 +260,4 @@ const deckCardBody = async (
       .status(500)
       .json({ message: "Unable to validate request body.", error });
   }
-};
-
-export default {
-  user,
-  deck,
-  registerUserBody,
-  loginUserBody,
-  deckBody,
-  cardBody,
-  deckCardBody,
 };

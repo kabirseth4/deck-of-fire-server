@@ -6,8 +6,7 @@ import {
   userValidationTestCases,
   deckValidationTestCases,
 } from "./helpers/test.cases.js";
-import { Deck } from "../types/deck.js";
-import { Card } from "../types/card.js";
+import { Deck, Card } from "../types/index.js";
 
 describe("GET /users/:userId/decks", () => {
   it("returns all decks for user", async () => {

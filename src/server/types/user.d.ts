@@ -1,4 +1,4 @@
-import { Id } from "./types.js";
+import { Id } from "./index.js";
 
 export interface NewUser {
   username: string;

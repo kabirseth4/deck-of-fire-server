@@ -1,18 +1,16 @@
 import { Router } from "express";
-import validate from "../middleware/validation.middleware.js";
-import {
-  allDecks,
-  singleDeck,
-  newDeck,
-  cardsToDeck,
-} from "../controllers/deck.controller.js";
+import { validate } from "../middleware/index.js";
+import { deckController } from "../controllers/index.js";
 
-const router = Router({ mergeParams: true });
+export const deckRoutes = Router({ mergeParams: true });
 
-router.route("/").get(allDecks).post(validate.deckBody, newDeck);
+deckRoutes
+  .route("/")
+  .get(deckController.allDecks)
+  .post(validate.deckBody, deckController.newDeck);
 
-router.use("/:deckId", validate.deck);
-router.route("/:deckId").get(singleDeck);
-router.route("/:deckId/cards").post(validate.deckCardBody, cardsToDeck);
-
-export default router;
+deckRoutes.use("/:deckId", validate.deck);
+deckRoutes.route("/:deckId").get(deckController.singleDeck);
+deckRoutes
+  .route("/:deckId/cards")
+  .post(validate.deckCardBody, deckController.cardsToDeck);

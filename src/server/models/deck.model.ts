@@ -1,9 +1,15 @@
 import knex from "../configs/knex.config.js";
-import { NewDeck, Deck, DeckCard, NewDeckCard, DBDeck } from "../types/deck.js";
-import { Card } from "../types/card.js";
-import { Id } from "../types/types.js";
+import type {
+  NewDeck,
+  Deck,
+  DeckCard,
+  NewDeckCard,
+  DBDeck,
+  Card,
+  Id,
+} from "../types/index.js";
 
-const getAll = async (userId: Id) => {
+export const getAll = async (userId: Id) => {
   const dBDecks: DBDeck[] = await knex("deck")
     .where({ user_id: userId })
     .select("id", "name", "is_scored", "is_custom", "is_playable");
@@ -20,7 +26,7 @@ const getAll = async (userId: Id) => {
   return decks;
 };
 
-const getOne = async (deckId: Id) => {
+export const getOne = async (deckId: Id) => {
   const dBDeck: DBDeck = await knex("deck")
     .select("id", "name", "is_scored", "is_custom", "is_playable", "user_id")
     .where({ id: deckId })
@@ -40,7 +46,10 @@ const getOne = async (deckId: Id) => {
   return deck;
 };
 
-const getCards = async (deckId: Id, columns: string[] | string = "*") => {
+export const getCards = async (
+  deckId: Id,
+  columns: string[] | string = "*"
+) => {
   const cards: Card[] = await knex("card")
     .join("deck_card", "deck_card.card_id", "card.id")
     .where({ deck_id: deckId })
@@ -48,7 +57,7 @@ const getCards = async (deckId: Id, columns: string[] | string = "*") => {
   return cards;
 };
 
-const addNew = async (newDeck: NewDeck) => {
+export const addNew = async (newDeck: NewDeck) => {
   const [newDeckId]: number[] = await knex("deck").insert(newDeck);
   const createdDeck = await getOne(newDeckId);
   if (!createdDeck) throw new Error("Unable to retrieve deck from database");
@@ -56,7 +65,7 @@ const addNew = async (newDeck: NewDeck) => {
   return createdDeck;
 };
 
-const addCard = async (
+export const addCard = async (
   deckId: Id,
   deckCard: NewDeckCard,
   cardColumns: string[] | string = "*"
@@ -71,15 +80,6 @@ const addCard = async (
   return createdDeckCard;
 };
 
-const setAsPlayable = async (deckId: Id) => {
+export const setAsPlayable = async (deckId: Id) => {
   await knex("deck").update({ is_playable: true }).where({ id: deckId });
-};
-
-export const deckModel = {
-  getAll,
-  getOne,
-  getCards,
-  addNew,
-  addCard,
-  setAsPlayable,
 };

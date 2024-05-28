@@ -3,9 +3,13 @@ import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
 import { userModel, deckModel, cardModel } from "../models/index.js";
 import { defaultDeck, defaultCards } from "../data/index.js";
-import { NewUser, UserLogin } from "../types/user.js";
-import { NewDeck, NewDeckCard } from "../types/deck.js";
-import { NewCard } from "../types/card.js";
+import type {
+  NewUser,
+  UserLogin,
+  NewDeck,
+  NewDeckCard,
+  NewCard,
+} from "../types/index.js";
 
 export const registerUser = async (req: Request, res: Response) => {
   const { username, email, password } = req.body as NewUser;
