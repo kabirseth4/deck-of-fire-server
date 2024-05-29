@@ -52,6 +52,19 @@ export const postNewDeck = async (req: Request, res: Response) => {
   }
 };
 
+export const deleteDeck = async (req: Request, res: Response) => {
+  const { deckId } = req.params;
+
+  try {
+    await deckModel.deleteOne(deckId);
+    return res.status(204).send();
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Unable to delete deck from database", error });
+  }
+};
+
 export const postCardsToDeck = async (req: Request, res: Response) => {
   const { deckId } = req.params;
   const cards: NewDeckCard[] = req.body;

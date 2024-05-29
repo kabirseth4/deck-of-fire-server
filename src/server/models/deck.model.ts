@@ -11,8 +11,8 @@ import knex from "../configs/knex.config.js";
 
 export const readAll = async (userId: Id) => {
   const dBDecks: DBDeck[] = await knex("deck")
-    .where({ user_id: userId })
-    .select("id", "name", "is_scored", "is_custom", "is_playable");
+    .select("id", "name", "is_scored", "is_custom", "is_playable")
+    .where({ user_id: userId });
 
   const decks: Deck[] = dBDecks.map(
     ({ id, name, is_scored, is_custom, is_playable }) => ({
@@ -27,7 +27,7 @@ export const readAll = async (userId: Id) => {
 };
 
 export const readOne = async (deckId: Id) => {
-  const dBDeck: DBDeck = await knex("deck")
+  const dBDeck = await knex<DBDeck>("deck")
     .select("id", "name", "is_scored", "is_custom", "is_playable", "user_id")
     .where({ id: deckId })
     .first();
@@ -58,11 +58,17 @@ export const readCards = async (
 };
 
 export const create = async (newDeck: NewDeck) => {
-  const [newDeckId]: number[] = await knex("deck").insert(newDeck);
+  const [newDeckId] = await knex("deck").insert(newDeck);
   const createdDeck = await readOne(newDeckId);
-  if (!createdDeck) throw new Error("Unable to retrieve deck from database");
+  if (!createdDeck)
+    throw new Error("Unable to retrieve new deck from database");
   delete createdDeck?.user_id;
   return createdDeck;
+};
+
+export const deleteOne = async (id: Id) => {
+  const deletedRows = await knex("deck").where({ id }).del();
+  if (!deletedRows) throw new Error("Unable to delete deck");
 };
 
 export const addCard = async (
@@ -71,12 +77,12 @@ export const addCard = async (
   cardColumns: string[] | string = "*"
 ) => {
   deckCard.deck_id = deckId;
-  const newDeckCardId: number[] = await knex("deck_card").insert(deckCard);
+  const newDeckCardId = await knex<DeckCard>("deck_card").insert(deckCard);
 
   const createdDeckCard: DeckCard = await knex("deck_card")
+    .select(cardColumns)
     .whereIn("id", newDeckCardId)
-    .first()
-    .select(cardColumns);
+    .first();
   return createdDeckCard;
 };
 

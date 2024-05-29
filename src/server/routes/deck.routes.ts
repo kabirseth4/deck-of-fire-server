@@ -10,7 +10,12 @@ deckRoutes
   .post(validate.deckBody, deckController.postNewDeck);
 
 deckRoutes.use("/:deckId", validate.deck);
-deckRoutes.route("/:deckId").get(deckController.getSingleDeck);
+
+deckRoutes
+  .route("/:deckId")
+  .get(deckController.getSingleDeck)
+  .delete(deckController.deleteDeck);
+
 deckRoutes
   .route("/:deckId/cards")
   .post(validate.deckCardBody, deckController.postCardsToDeck);

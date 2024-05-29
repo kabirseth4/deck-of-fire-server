@@ -291,6 +291,56 @@ describe("GET /users/:userId/decks/:deckId", () => {
   });
 });
 
+describe("DELETE /users/:userId/decks/:deckId", () => {
+  const deckId = 1;
+
+  it("deletes deck and returns 204", async () => {
+    await request(app)
+      .delete(`/users/${userId}/decks/${deckId}`)
+      .set(authHeader)
+      .expect(204);
+
+    const deletedDeck = await knex("deck").where({ id: deckId }).first();
+    expect(deletedDeck).not.toBeDefined();
+
+    const deletedDeckCards = await knex("deck_card").where({ deck_id: deckId });
+    expect(deletedDeckCards).toHaveLength(0);
+  });
+
+  it("passes deck validation test cases", async () => {
+    await Promise.all(
+      deckValidationTestCases.map(async ({ deck, status }) => {
+        await request(app)
+          .delete(`/users/${userId}/decks/${deck}`)
+          .set(authHeader)
+          .expect(status);
+      })
+    );
+  });
+
+  it("passes user validation test cases", async () => {
+    await Promise.all(
+      userValidationTestCases.map(async ({ user, header, status }) => {
+        await request(app)
+          .delete(`/users/${user}/decks/${deckId}`)
+          .set(header)
+          .expect(status);
+      })
+    );
+  });
+
+  it("returns 500 if database error", async () => {
+    await knex.migrate.rollback();
+
+    await request(app)
+      .delete(`/users/${userId}/decks/${deckId}`)
+      .set(authHeader)
+      .expect(500);
+
+    await knex.migrate.latest();
+  });
+});
+
 describe("POST /users/:userId/decks/:deckId/cards", () => {
   const deckId = 5; // Empty deck
 
