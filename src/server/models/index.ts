@@ -1,3 +1,3 @@
-export * as userModel from "./user.model.js";
-export * as deckModel from "./deck.model.js";
-export * as cardModel from "./card.model.js";
+export { UserModel } from "./user.model.js";
+export { DeckModel } from "./deck.model.js";
+export { CardModel } from "./card.model.js";

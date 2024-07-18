@@ -8,7 +8,7 @@ import type {
 import { hashSync, compareSync } from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
-import { userModel, deckModel, cardModel } from "../models/index.js";
+import { UserModel, DeckModel, CardModel } from "../models/index.js";
 import { defaultDeck, defaultCards } from "../data/index.js";
 
 export const register = async (req: Request, res: Response) => {
@@ -22,26 +22,26 @@ export const register = async (req: Request, res: Response) => {
   };
 
   try {
-    const createdUser = await userModel.create(newUser);
+    const createdUser = await UserModel.create(newUser);
 
     // Add default deck
     const defaultUserDeck: NewDeck = {
       ...defaultDeck,
       user_id: createdUser.id,
     };
-    const addedDeck = await deckModel.create(defaultUserDeck);
+    const addedDeck = await DeckModel.create(defaultUserDeck);
 
     for (const card of defaultCards) {
       const cardToCreate: NewCard = { ...card, user_id: createdUser.id };
-      const createdCard = await cardModel.create(cardToCreate);
+      const createdCard = await CardModel.create(cardToCreate);
       const cardToAdd: NewDeckCard = {
         card_id: createdCard.id,
         deck_id: addedDeck.id,
       };
-      await deckModel.addCard(addedDeck.id, cardToAdd);
+      await DeckModel.addCard(addedDeck.id, cardToAdd);
     }
 
-    await deckModel.setAsPlayable(addedDeck.id);
+    await DeckModel.setAsPlayable(addedDeck.id);
 
     return res.status(201).json(createdUser);
   } catch (error) {
@@ -55,7 +55,7 @@ export const logIn = async (req: Request, res: Response) => {
   const { email, password } = req.body as UserLogin;
 
   try {
-    const user = await userModel.readOne(email);
+    const user = await UserModel.readOne(email);
 
     if (!user) {
       return res.status(401).json({ message: "Invalid login credentials" });

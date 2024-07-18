@@ -1,12 +1,12 @@
 import type { DeckWithCards, NewDeck, NewDeckCard } from "../types/index.js";
 import { Request, Response } from "express";
-import { deckModel } from "../models/index.js";
+import { DeckModel } from "../models/index.js";
 
 export const getAllDecks = async (req: Request, res: Response) => {
   const { userId } = req.params;
 
   try {
-    const decks = await deckModel.readAll(userId);
+    const decks = await DeckModel.readAll(userId);
     return res.json(decks);
   } catch (error) {
     return res
@@ -19,7 +19,7 @@ export const getSingleDeck = async (req: Request, res: Response) => {
   const { deckId } = req.params;
 
   try {
-    const deck = await deckModel.readOne(deckId);
+    const deck = await DeckModel.readOne(deckId);
     if (!deck) throw new Error("Unable to retrieve deck from database");
     delete deck.user_id;
 
@@ -27,7 +27,7 @@ export const getSingleDeck = async (req: Request, res: Response) => {
     if (deck.is_custom) cardColumns.push("occurrences");
     if (deck.is_scored) cardColumns.push("penalty");
 
-    const cards = await deckModel.readCards(deckId, cardColumns);
+    const cards = await DeckModel.readCards(deckId, cardColumns);
 
     const deckWithCards: DeckWithCards = { ...deck, cards };
     return res.json(deckWithCards);
@@ -43,7 +43,7 @@ export const postNewDeck = async (req: Request, res: Response) => {
   const newDeck: NewDeck = { ...req.body, user_id: userId };
 
   try {
-    const createdDeck = await deckModel.create(newDeck);
+    const createdDeck = await DeckModel.create(newDeck);
     return res.status(201).json(createdDeck);
   } catch (error) {
     return res
@@ -56,7 +56,7 @@ export const deleteDeck = async (req: Request, res: Response) => {
   const { deckId } = req.params;
 
   try {
-    await deckModel.deleteOne(deckId);
+    await DeckModel.deleteOne(deckId);
     return res.status(204).send();
   } catch (error) {
     return res
@@ -70,7 +70,7 @@ export const postCardsToDeck = async (req: Request, res: Response) => {
   const cards: NewDeckCard[] = req.body;
 
   try {
-    const deckToUpdate = await deckModel.readOne(deckId);
+    const deckToUpdate = await DeckModel.readOne(deckId);
     if (!deckToUpdate) throw new Error("Unable to retrieve deck from database");
 
     const cardColumns = ["id", "card_id", "deck_id"];
@@ -79,7 +79,7 @@ export const postCardsToDeck = async (req: Request, res: Response) => {
 
     const createdDeckCards = await Promise.all(
       cards.map(async (card) => {
-        const createdDeckCard = await deckModel.addCard(
+        const createdDeckCard = await DeckModel.addCard(
           deckId,
           card,
           cardColumns
@@ -88,12 +88,12 @@ export const postCardsToDeck = async (req: Request, res: Response) => {
       })
     );
 
-    const updatedDeckCards = await deckModel.readCards(deckId);
+    const updatedDeckCards = await DeckModel.readCards(deckId);
     if (deckToUpdate.is_custom && updatedDeckCards.length > 0) {
-      await deckModel.setAsPlayable(deckId);
+      await DeckModel.setAsPlayable(deckId);
     }
     if (!deckToUpdate.is_custom && updatedDeckCards.length === 13) {
-      await deckModel.setAsPlayable(deckId);
+      await DeckModel.setAsPlayable(deckId);
     }
 
     return res.status(201).json(createdDeckCards);
